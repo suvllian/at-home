@@ -1,0 +1,40 @@
+<view class="container">
+  <view class="flex-container">
+    <image src="../../assets/images/index_banner.jpg" mode="widthFix" class="banner-img"></image>
+  </view>
+  <view class="section nav-container">
+    <view class="flex-container" wx:for="{{navList}}" wx:for-index="navListIdx" wx:for-item="navs">
+      <view class="nav-row" wx:for="{{navs}}" wx:for-index="navsIdx" wx:for-item="nav">
+        <view>
+          <image src="{{nav.src}}" mode="aspectFit" class="nav-img"></image>
+        </view>
+        <text>{{nav.title}}</text>
+      </view>
+    </view>
+  </view>
+  <view class="section panel-container">
+    <view wx:for="{{panelList}}" wx:for-index="panelListIdx" wx:for-item="panel">
+      <view class="panel-row">
+        <view>
+          <image src="{{panel.src}}" mode="aspectFit" class="panel-img"></image>
+        </view>
+        <text class="panel-title">{{panel.title}}</text>
+        <text class="panel-label">{{panel.label}}</text>
+      </view>
+    </view>
+  </view>
+  <view class="card-section" wx:for="{{cardList}}" wx:for-index="cardListIdx" wx:for-item="cards">
+    <view class="card-title">{{cards.title}}</view>
+    <view class="card-container">
+      <view wx:for="{{cards.cards}}" wx:for-index="cardsIdx" wx:for-item="card" class="card-item">
+        <view class="card-item-inner">
+          <image src="{{card.src}}" mode="widthFix" class="card-img"></image>
+          <view class="card-text">{{card.text}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="copyright">
+    <view class="copyright-inner">©西安在乎网络科技有限公司</view>
+  </view>
+</view>
