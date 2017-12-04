@@ -4,11 +4,6 @@
   margin-top: 22rpx;
   background-color: #fff;
 }
-.flex-container {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-}
 
 /**banner**/
 .banner-img {
@@ -27,6 +22,7 @@
   margin-bottom: 30rpx;
 }
 .nav-img {
+  display: inline-block;
   width: 80rpx;
   height: 80rpx;
 }
@@ -41,10 +37,9 @@
   padding: 28rpx;
 }
 .panel-row:nth-child(1) {
-  border-bottom: 1rpx solid #eee;
+  border-bottom: 1rpx solid #e6e6e6;
 }
 .panel-img {
-  display: block;
   width: 60rpx;
   height: 60rpx;
 }
@@ -82,15 +77,15 @@
 }
 .card-item-inner {
   overflow: hidden;
-  border: 3rpx solid #fff;
-  border-radius: 15rpx;
+  border: 5rpx solid #fff;
+  border-radius: 20rpx;
   text-align: center;
   background-color: #fff;
 }
 .card-img {
-  display: block;
   width: 100%;
   height: 200rpx;
+  border-radius: 20rpx;
 }
 .card-text {
   padding: 16rpx 0;
@@ -102,6 +97,7 @@
   width: 100%;
   padding: 0rpx 30rpx 0rpx 30rpx;
   margin: 40rpx;
+  font-size: 26rpx;
   color: #bfbfbf;
 }
 .copyright-inner {

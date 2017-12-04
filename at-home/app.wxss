@@ -1,7 +1,4 @@
 /**app.wxss**/
-view {
-  box-sizing: border-box;
-}
 .container {
   height: 100%;
   display: flex;
@@ -11,4 +8,28 @@ view {
   box-sizing: border-box;
   background-color: #e6e6e6;
   font-size: 34rpx;
-} 
+}
+/**common.wxss**/
+view {
+  box-sizing: border-box;
+}
+image {
+  display: block;
+}
+.text-right {
+  text-align: right;
+}
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.gray {
+  color: #e6e6e6;
+}
+.gray-word {
+  color: #5e5e5e;
+}
+.font-28 {
+  font-size: 28rpx;
+}

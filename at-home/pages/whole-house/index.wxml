@@ -1,0 +1,59 @@
+<!--logs.wxml-->
+<view class="container whole-house">
+  <view class="flex-container">
+    <image src="../../assets/images/index_banner.jpg" mode="widthFix" class="banner-img"></image>
+  </view>
+  <view class="section">
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">房屋面积</view>
+        <view class="row-inner text-right">
+          <text>100m-135m</text>
+          <text class="gray"> ></text>
+        </view>
+      </view>
+    </view>
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">预约时间</view>
+        <view class="row-inner text-right">
+          <text>100m-135m</text>
+          <text class="gray"> ></text>
+        </view>
+      </view>
+    </view>
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">抵金券</view>
+        <view class="row-inner text-right">
+          <text>100m-135m</text>
+          <text class="gray"> ></text>
+        </view>
+      </view>
+    </view>
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">会员折扣</view>
+        <view class="row-inner text-right">
+          <text>100m-135m</text>
+        </view>
+      </view>
+    </view>
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner text-right">
+          <text class="font-28 gray-word">总计￥300  </text>
+          <text class="font-28 gray-word">优惠￥20  </text>
+          <text>实付￥20</text>
+        </view>
+      </view>
+    </view>
+    <view class="order-row">
+      <view class="contact-service">
+        <view>
+          <text class="font-28">联系客服</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

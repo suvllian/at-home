@@ -1,5 +1,0 @@
-<view>
-  <view wx:if="{{page == 'reading'}}">
-    
-  </view>
-</view>
