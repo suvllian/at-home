@@ -1,0 +1,37 @@
+<view class="container personal">
+  <view class="section">
+    <view class="person-info">
+      <view>
+        <image src="{{userInfo.avatarUrl}}" background-size="cover" class="person-img"></image>
+      </view>
+      <view class="person-name">
+        <view class="userinfo-nickname">{{userInfo.nickName}}</view>
+        <view class="userinfo-nickname">银卡会员</view>
+      </view>
+    </view>
+  </view>
+  <view class="section">
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">充值</view>
+      </view>
+    </view>
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">优惠券/兑换</view>
+      </view>
+    </view>
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">我的服务地址</view>
+      </view>
+    </view>
+    <view class="order-row">
+      <view class="contact-service">
+        <view>
+          <text class="font-28">客服电话：400-345-56</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

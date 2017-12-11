@@ -1,15 +1,17 @@
-//logs.js
-const util = require('../../utils/util.js')
-
 Page({
   data: {
-    logs: []
+    areaArray: ['100㎡—135㎡', '136㎡—180㎡', '100㎡以上'],
+    areaIndex: 0,
+    time: ''
   },
-  onLoad: function () {
+  bindPickerChange: function (e) {
     this.setData({
-      logs: (wx.getStorageSync('logs') || []).map(log => {
-        return util.formatTime(new Date(log))
-      })
+      areaIndex: e.detail.value
+    })
+  },
+  bindTimeChange: function (e) {
+    this.setData({
+      time: e.detail.value
     })
   }
 })

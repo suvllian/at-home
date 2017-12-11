@@ -9,16 +9,16 @@ Page({
     current: 0,
     navList: [
       [
-        { title: '全屋保洁', src: '../../assets/images/whole_home.png' },
-        { title: '钟点保洁', src: '../../assets/images/hour.png' },
-        { title: '擦玻璃', src: '../../assets/images/wash_glass.png' },
-        { title: '厨卫清洁', src: '../../assets/images/kitchen.png' }
+        { title: '全屋保洁', src: '../../assets/images/whole_home.png', url: '/pages/whole-house/index' },
+        { title: '钟点保洁', src: '../../assets/images/hour.png', url: '/pages/hour/index' },
+        { title: '擦玻璃', src: '../../assets/images/wash_glass.png', url: '/pages/whole-house/index' },
+        { title: '厨卫清洁', src: '../../assets/images/kitchen.png', url: '/pages/whole-house/index' }
       ],
       [
-        { title: '家电清洗', src: '../../assets/images/electrical.png' },
-        { title: '家居养护', src: '../../assets/images/household.png' },
-        { title: '家政服务', src: '../../assets/images/housekeeping.png' },
-        { title: '企业清洁', src: '../../assets/images/corproation.png' }
+        { title: '家电清洗', src: '../../assets/images/electrical.png', url: '/pages/whole-house/index' },
+        { title: '家居养护', src: '../../assets/images/household.png', url: '/pages/whole-house/index' },
+        { title: '家政服务', src: '../../assets/images/housekeeping.png', url: '/pages/whole-house/index' },
+        { title: '企业清洁', src: '../../assets/images/corproation.png', url: '/pages/whole-house/index' }
       ]
     ],
     panelList: [

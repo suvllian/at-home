@@ -5,7 +5,7 @@
   <view class="section nav-container">
     <view class="flex-container" wx:for="{{navList}}" wx:for-index="navListIdx" wx:for-item="navs">
       <view class="nav-row" wx:for="{{navs}}" wx:for-index="navsIdx" wx:for-item="nav">
-      <navigator url="/pages/whole-house/index" hover-class="other-navigator-hover">
+      <navigator url="{{nav.url}}" hover-class="other-navigator-hover">
         <view>
           <image src="{{nav.src}}" mode="aspectFit" class="nav-img"></image>
         </view>

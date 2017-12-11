@@ -1,13 +1,13 @@
 <view class="container whole-house">
   <view class="flex-container">
-    <image src="../../assets/images/index_banner.jpg" mode="widthFix" class="banner-img"></image>
+    <image src="../../assets/images/hour_banner.jpg" mode="widthFix" class="banner-img"></image>
   </view>
   <view class="section">
     <view class="order-row">
       <view class="order-row-inner">
-        <view class="row-inner">房屋面积</view>
-        <picker mode='selector' bindchange='bindPickerChange' value='{{areaIndex}}' range='{{areaArray}}' class="row-inner text-right">
-          <text>{{areaArray[areaIndex]}}</text>
+        <view class="row-inner">服务时长</view>
+        <picker mode='selector' bindchange='bindDurationChange' value='{{durationIndex}}' range='{{durationArray}}' class="row-inner text-right">
+          <text>{{durationArray[durationIndex]}}</text>
           <text class="gray"> ></text>
         </picker>
       </view>

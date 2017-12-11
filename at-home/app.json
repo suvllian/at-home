@@ -1,7 +1,9 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/whole-house/index"
+    "pages/whole-house/index",
+    "pages/hour/index",
+    "pages/personal/index"
   ],
   "window":{
     "backgroundTextStyle":"light",
