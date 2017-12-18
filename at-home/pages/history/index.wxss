@@ -1,0 +1,9 @@
+.history {
+  height: 100vh;
+}
+.order-row-inner {
+  display: block;
+}
+.order-text {
+  padding: 6rpx 0;
+}

@@ -2,6 +2,7 @@
 .section {
   width: 100%;
   margin-top: 22rpx;
+  padding: 0;
   background-color: #fff;
 }
 

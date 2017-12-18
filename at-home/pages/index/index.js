@@ -22,9 +22,9 @@ Page({
       ]
     ],
     panelList: [
-      { title: '我的订单', label: '查看历史订单 >>', src: '../../assets/images/my_order.png' },
-      { title: '我的卡券', label: '查看更多卡券 >>', src: '../../assets/images/my_coupons.png' },
-      { title: '个人中心', label: '管理个人信息 >>', src: '../../assets/images/personal.png' }
+      { title: '我的订单', label: '查看历史订单 >>', src: '../../assets/images/my_order.png', url: '/pages/history/index' },
+      { title: '我的卡券', label: '查看更多卡券 >>', src: '../../assets/images/my_coupons.png', url: '/pages/personal/index' },
+      { title: '个人中心', label: '管理个人信息 >>', src: '../../assets/images/personal.png', url: '/pages/personal/index' }
     ],
     cardList: [
       {

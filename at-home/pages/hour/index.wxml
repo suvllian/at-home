@@ -1,3 +1,7 @@
+<import src="../components/radius/circle-radius.wxml" />
+<import src="../components/radius/top-radius.wxml" />
+<import src="../components/radius/bottom-radius.wxml" />
+
 <view class="container whole-house">
   <view class="flex-container">
     <image src="../../assets/images/hour_banner.jpg" mode="widthFix" class="banner-img"></image>
@@ -7,52 +11,74 @@
       <view class="order-row-inner">
         <view class="row-inner">服务时长</view>
         <picker mode='selector' bindchange='bindDurationChange' value='{{durationIndex}}' range='{{durationArray}}' class="row-inner text-right">
-          <text>{{durationArray[durationIndex]}}</text>
-          <text class="gray"> ></text>
+          <view class="flex-ver-center-container align-right">
+            <text>{{durationArray[durationIndex]}}</text>
+            <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+          </view>
         </picker>
       </view>
     </view>
     <view class="order-row">
       <view class="order-row-inner">
         <view class="row-inner">预约时间</view>
-        <picker mode='time' bindchange='bindTimeChange' value='{{time}}' start='00:00' end='24:00' class="row-inner text-right">
-          <text>{{time}}</text>
-          <text class="gray"> ></text>
-        </picker>
+        <view class="row-inner">
+          <view class="flex-ver-center-container align-right">
+            <picker mode='date' bindchange='bindDateChange' value='{{time}}' start='00:00' end='24:00'>
+              <text class="margin-6">{{date}}</text>
+            </picker>
+            <picker mode='time' bindchange='bindTimeChange' value='{{time}}' start='00:00' end='24:00'>
+              <text>{{time}}</text>
+            </picker>
+            <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+          </view>
+        </view>
       </view>
     </view>
     <view class="order-row">
       <view class="order-row-inner">
         <view class="row-inner">抵金券</view>
-        <view class="row-inner text-right">
-          <text>100m-135m</text>
-          <text class="gray"> ></text>
+        <view class="row-inner">
+          <view class="flex-ver-center-container align-right">
+            <text class="red font-weight-600">-100</text>
+            <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+          </view>
         </view>
       </view>
+      <template is="bottom" />
     </view>
     <view class="order-row">
       <view class="order-row-inner">
-        <view class="row-inner">会员折扣</view>
+        <view class="row-inner">
+          <view class="flex-ver-center-container">
+            <image src="./../../assets/images/vip_icon.png" class="icon"></image>
+            <text>会员折扣</text>
+          </view>
+        </view>
         <view class="row-inner text-right">
-          <text>100m-135m</text>
+          <text class="red">-￥20</text>
         </view>
       </view>
+      <template is="circle" />
     </view>
     <view class="order-row">
       <view class="order-row-inner">
         <view class="row-inner text-right">
           <text class="font-28 gray-word">总计￥300  </text>
           <text class="font-28 gray-word">优惠￥20  </text>
-          <text>实付￥20</text>
+          <text class="font-weight-600">实付</text>
+          <text class="red font-weight-600">￥280</text>
         </view>
       </view>
+      <template is="circle" />
     </view>
     <view class="order-row">
       <view class="contact-service">
-        <view>
+        <view class="flex-ver-center-container" bindtap="callService">
+          <image src="./../../assets/images/phone_icon.png" class="icon"></image>
           <text class="font-28">联系客服</text>
         </view>
       </view>
+      <template is="top" />
     </view>
   </view>
 </view>

@@ -1,0 +1,4 @@
+<template name="top">
+  <view class="radius-block left-top-radius"></view>
+  <view class="radius-block right-top-radius"></view>
+</template>

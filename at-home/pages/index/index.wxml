@@ -16,13 +16,15 @@
   </view>
   <view class="section panel-container">
     <view wx:for="{{panelList}}" wx:for-index="panelListIdx" wx:for-item="panel">
-      <view class="panel-row">
-        <view>
-          <image src="{{panel.src}}" mode="aspectFit" class="panel-img"></image>
+      <navigator url="{{panel.url}}" hover-class="other-navigator-hover">
+        <view class="panel-row">
+          <view>
+            <image src="{{panel.src}}" mode="aspectFit" class="panel-img"></image>
+          </view>
+          <text class="panel-title">{{panel.title}}</text>
+          <text class="panel-label">{{panel.label}}</text>
         </view>
-        <text class="panel-title">{{panel.title}}</text>
-        <text class="panel-label">{{panel.label}}</text>
-      </view>
+      </navigator>
     </view>
   </view>
   <view class="card-section" wx:for="{{cardList}}" wx:for-index="cardListIdx" wx:for-item="cards">

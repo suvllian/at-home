@@ -33,7 +33,6 @@
   display: flex;
   padding: 30rpx 0;
 }
-
 .person-info {
   display: flex;
   align-items: center;
@@ -47,4 +46,19 @@
 }
 .person-name {
   padding-left: 26rpx;
+}
+
+.nickname {
+  padding: 8rpx 0;
+  font-weight: 600;
+}
+.member-type {
+  font-size: 26rpx;
+  color: #a0a0a0;
+}
+
+.login-out {
+  padding: 16rpx 0;
+  text-align: center;
+  background-color: #fff;
 }

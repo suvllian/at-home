@@ -1,0 +1,6 @@
+<template name="circle">
+  <view class="radius-block left-top-radius"></view>
+  <view class="radius-block right-top-radius"></view>
+  <view class="radius-block left-bottom-radius"></view>
+  <view class="radius-block right-bottom-radius"></view>
+</template>
