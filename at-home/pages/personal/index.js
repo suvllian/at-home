@@ -2,7 +2,7 @@ Page({
   data: {
     userInfo: {}
   },
-  onLoad: function() {aaa
+  onLoad: function() {
     console.log('onLoad')
 
     wx.login({

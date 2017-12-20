@@ -95,11 +95,17 @@ image {
 }
 .order-row-inner {
   display: flex;
-  padding: 30rpx 0;
+  padding: 25rpx 0;
   border-bottom: 2rpx solid #e6e6e6;
 }
 .row-inner {
   flex: 1;
+}
+.row-inner-left {
+  flex: 1 1 40%;
+}
+.row-inner-right {
+  flex: 1 1 60%;
 }
 
 /** 圆角效果 **/
@@ -134,3 +140,34 @@ image {
   margin-right: 6rpx;
 }
 
+/** 确认支付 **/
+.pay-container {
+  height: 100rpx;
+  width: 100%;
+  position: fixed;
+  display: flex;
+  bottom: 0;
+  left: 0;
+  background-color: #fff;
+}
+.pay-container-left {
+  flex: 1 1 40%;
+  display: flex;
+  align-items: center;
+  padding-left: 48rpx;
+  font-size: 26rpx;
+}
+.pay-container-medium {
+  flex: 1 1 33%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pay-container-button {
+  flex: 1 1 27%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background-color: #ff3d3d;
+}

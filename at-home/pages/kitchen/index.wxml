@@ -4,16 +4,18 @@
 
 <view class="container whole-house">
   <view class="flex-container">
-    <image src="../../assets/images/index_banner.jpg" mode="widthFix" class="banner-img"></image>
+    <image src="../../assets/images/kitchen_banner.jpg" mode="widthFix" class="banner-img"></image>
   </view>
   <view class="section">
     <view class="order-row">
       <view class="order-row-inner">
-        <view class="row-inner">房屋面积</view>
-        <picker mode='selector' bindchange='bindPickerChange' value='{{areaIndex}}' range='{{areaArray}}' class="row-inner text-right">
-          <text>{{areaArray[areaIndex]}}</text>
-        </picker>
-        <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+        <view class="row-inner-left">厨房、卫生间</view>
+        <view class="row-inner-right">
+          <view class="flex-ver-center-container align-right" bindtap="togglePopup">
+            <text>{{showText}}</text>
+            <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+          </view>
+        </view>
       </view>
     </view>
     <view class="order-row">
@@ -63,8 +65,7 @@
         <view class="row-inner text-right">
           <text class="font-28 gray-word">总计￥300  </text>
           <text class="font-28 gray-word">优惠￥20  </text>
-          <text class='font-weight-600'>实付</text>
-          <text>￥20</text>
+          <text>实付￥20</text>
         </view>
       </view>
       <template is="circle" />
@@ -77,6 +78,35 @@
         </view>
       </view>
       <template is="top" />
+    </view>
+  </view>
+
+  <view class="show-popup" hidden="{{hideSelectPopup}}" >
+    <view class="popup-mask" bindtap="closePopupTap"></view>
+    <view class="popup-contents">
+      <view class="pick-number">
+        <view class="pick-number-label">厨房</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{kitchenCount == minCount ? 'disabled-btn': ''}}" bindtap="decreaseKitchen">-</view>
+            <view class="pick-input">
+              <input type="number" value="{{kitchenCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{kitchenCount == maxCount ? 'disabled-btn': ''}}" bindtap="increaseKitchen">+</view>
+        </view>
+      </view>
+      <view class="pick-number">
+        <view class="pick-number-label">卫生间</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{bathroomCount == minCount ? 'disabled-btn': ''}}" bindtap="decreaseBathroom">-</view>
+            <view class="pick-input">
+                <input  type="number" value="{{bathroomCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{bathroomCount== maxCount ? 'disabled-btn': ''}}" bindtap="increaseBathroom">+</view>
+        </view>
+      </view>  
+      <view class="popup-submit-btn" bindtap="submitNumber">
+        确定
+      </view>                   
     </view>
   </view>
   <view class='pay-container'>

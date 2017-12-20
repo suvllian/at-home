@@ -4,7 +4,7 @@
 
 <view class="container whole-house">
   <view class="flex-container">
-    <image src="../../assets/images/index_banner.jpg" mode="widthFix" class="banner-img"></image>
+    <image src="../../assets/images/wash_glass_banner.jpg" mode="widthFix" class="banner-img"></image>
   </view>
   <view class="section">
     <view class="order-row">
@@ -63,8 +63,7 @@
         <view class="row-inner text-right">
           <text class="font-28 gray-word">总计￥300  </text>
           <text class="font-28 gray-word">优惠￥20  </text>
-          <text class='font-weight-600'>实付</text>
-          <text>￥20</text>
+          <text>实付￥20</text>
         </view>
       </view>
       <template is="circle" />

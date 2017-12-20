@@ -10,7 +10,7 @@
     <view class="order-row">
       <view class="order-row-inner">
         <view class="row-inner">服务时长</view>
-        <picker mode='selector' bindchange='bindDurationChange' value='{{durationIndex}}' range='{{durationArray}}' class="row-inner text-right">
+        <picker mode='selector' bindchange='bindDurationChange' value='{{durationIndex}}' range='{{durationArray}}' class="row-inner">
           <view class="flex-ver-center-container align-right">
             <text>{{durationArray[durationIndex]}}</text>
             <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
@@ -79,6 +79,18 @@
         </view>
       </view>
       <template is="top" />
+    </view>
+  </view>
+  <view class='pay-container'>
+    <view class='pay-container-left'>
+      <text class='gray-word'>为您省下￥120.00元</text>
+    </view>
+    <view class='pay-container-medium'>
+      <text class='font-weight-600'>待支付</text>
+      <text class='red'>￥180</text>
+    </view>
+    <view class='pay-container-button'>
+      <text>现在预约</text>
     </view>
   </view>
 </view>

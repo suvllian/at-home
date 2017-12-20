@@ -1,6 +1,4 @@
 .whole-house {
-  display: block;
-  height: 100vh;
   font-size: 32rpx;
 }
 .section {

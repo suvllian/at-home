@@ -11,8 +11,8 @@ Page({
       [
         { title: '全屋保洁', src: '../../assets/images/whole_home.png', url: '/pages/whole-house/index' },
         { title: '钟点保洁', src: '../../assets/images/hour.png', url: '/pages/hour/index' },
-        { title: '擦玻璃', src: '../../assets/images/wash_glass.png', url: '/pages/whole-house/index' },
-        { title: '厨卫清洁', src: '../../assets/images/kitchen.png', url: '/pages/whole-house/index' }
+        { title: '擦玻璃', src: '../../assets/images/wash_glass.png', url: '/pages/wash-glass/index' },
+        { title: '厨卫清洁', src: '../../assets/images/kitchen.png', url: '/pages/kitchen/index' }
       ],
       [
         { title: '家电清洗', src: '../../assets/images/electrical.png', url: '/pages/whole-house/index' },

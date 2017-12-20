@@ -4,7 +4,9 @@
     "pages/whole-house/index",
     "pages/hour/index",
     "pages/personal/index",
-    "pages/history/index"
+    "pages/history/index",
+    "pages/kitchen/index",
+    "pages/wash-glass/index"
   ],
   "window":{
     "backgroundTextStyle":"light",
