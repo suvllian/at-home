@@ -1,4 +1,6 @@
-.whole-house {
+.wash-glass {
+  display: block;
+  height: 100vh;
   font-size: 32rpx;
 }
 .section {

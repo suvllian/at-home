@@ -10,10 +10,12 @@
     <view class="order-row">
       <view class="order-row-inner">
         <view class="row-inner">房屋面积</view>
-        <picker mode='selector' bindchange='bindPickerChange' value='{{areaIndex}}' range='{{areaArray}}' class="row-inner text-right">
-          <text>{{areaArray[areaIndex]}}</text>
+        <picker mode='selector' bindchange='bindPickerChange' value='{{selectedIndex}}' range='{{areaList}}' class="row-inner text-right">
+          <view class="flex-ver-center-container align-right">
+            <text>{{areaList[selectedIndex]}}</text>
+            <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+          </view>
         </picker>
-        <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
       </view>
     </view>
     <view class="order-row">
@@ -37,7 +39,8 @@
         <view class="row-inner">抵金券</view>
         <view class="row-inner">
           <view class="flex-ver-center-container align-right">
-            <text class="red font-weight-600">-100</text>
+            <text class="red font-weight-600" wx:if="{{coupons}}">-{{coupons}}</text>
+            <text class="red font-weight-600" wx:else>无抵金券</text>
             <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
           </view>
         </view>
@@ -53,7 +56,7 @@
           </view>
         </view>
         <view class="flex-ver-center-container align-right">
-          <text class="red font-weight-600">-￥20</text>
+          <text class="red font-weight-600">-￥{{priceList[selectedIndex] * memberScale}}</text>
         </view>
       </view>
       <template is="circle" />
@@ -61,10 +64,10 @@
     <view class="order-row">
       <view class="order-row-inner">
         <view class="row-inner text-right">
-          <text class="font-28 gray-word">总计￥300  </text>
-          <text class="font-28 gray-word">优惠￥20  </text>
+          <text class="font-28 gray-word margin-6">总计￥{{priceList[selectedIndex]}}  </text>
+          <text class="font-28 gray-word margin-6">优惠￥{{priceList[selectedIndex] * memberScale}}</text>
           <text class='font-weight-600'>实付</text>
-          <text>￥20</text>
+          <text>￥{{priceList[selectedIndex] * (1 - memberScale)}}</text>
         </view>
       </view>
       <template is="circle" />
@@ -81,11 +84,11 @@
   </view>
   <view class='pay-container'>
     <view class='pay-container-left'>
-      <text class='gray-word'>为您省下￥120.00元</text>
+      <text class='gray-word'>为您省下￥{{discountMoney}}元</text>
     </view>
     <view class='pay-container-medium'>
       <text class='font-weight-600'>待支付</text>
-      <text class='red'>￥180</text>
+      <text class='red'>￥{{priceList[selectedIndex] - discountMoney}}</text>
     </view>
     <view class='pay-container-button'>
       <text>现在预约</text>

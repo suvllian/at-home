@@ -2,7 +2,7 @@
 <import src="../components/radius/top-radius.wxml" />
 <import src="../components/radius/bottom-radius.wxml" />
 
-<view class="container whole-house">
+<view class="container wash-glass">
   <view class="flex-container">
     <image src="../../assets/images/wash_glass_banner.jpg" mode="widthFix" class="banner-img"></image>
   </view>
