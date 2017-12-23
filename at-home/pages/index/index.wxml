@@ -3,8 +3,8 @@
     <image src="../../assets/images/index_banner.jpg" mode="widthFix" class="banner-img"></image>
   </view>
   <view class="section nav-container">
-    <view class="flex-container" wx:for="{{navList}}" wx:for-index="navListIdx" wx:for-item="navs">
-      <view class="nav-row" wx:for="{{navs}}" wx:for-index="navsIdx" wx:for-item="nav">
+    <view class="flex-container" wx:for="{{navList}}" wx:key="navListIdx" wx:for-item="navs">
+      <view class="nav-row" wx:for="{{navs}}" wx:key="navsIdx" wx:for-item="nav">
       <navigator url="{{nav.url}}" hover-class="other-navigator-hover">
         <view>
           <image src="{{nav.src}}" mode="aspectFit" class="nav-img"></image>
@@ -15,7 +15,7 @@
     </view>
   </view>
   <view class="section panel-container">
-    <view wx:for="{{panelList}}" wx:for-index="panelListIdx" wx:for-item="panel">
+    <view wx:for="{{panelList}}" wx:key="panelListIdx" wx:for-item="panel">
       <navigator url="{{panel.url}}" hover-class="other-navigator-hover">
         <view class="panel-row">
           <view>
@@ -27,10 +27,10 @@
       </navigator>
     </view>
   </view>
-  <view class="card-section" wx:for="{{cardList}}" wx:for-index="cardListIdx" wx:for-item="cards">
+  <view class="card-section" wx:for="{{cardList}}" wx:key="cardListIdx" wx:for-item="cards">
     <view class="card-title">{{cards.title}}</view>
     <view class="card-container">
-      <view wx:for="{{cards.cards}}" wx:for-index="cardsIdx" wx:for-item="card" class="card-item">
+      <view wx:for="{{cards.cards}}" wx:key="cardsIdx" wx:for-item="card" class="card-item">
         <view class="card-item-inner">
           <image src="{{card.src}}" mode="widthFix" class="card-img"></image>
           <view class="card-text">{{card.text}}</view>

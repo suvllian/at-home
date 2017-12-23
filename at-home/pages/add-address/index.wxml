@@ -1,0 +1,47 @@
+<view class='container add-address'>
+  <view>
+    <view class='single-address'>
+      <view class='address-infor'>
+        <view class='address-label'>联系人</view>
+        <view class='address-text'>
+          <view class='address-name'>
+            <input type='text' placeholder='请输入' />
+          </view>
+          <view class='address-sex'>
+            <view class='choose-circle'></view> 女士 
+            <view class='not-choose-circle'></view> 先生
+          </view>
+        </view>
+      </view>
+      <view class='address-infor'>
+        <view class='address-label'>电话</view>
+        <view class='address-text'>
+          <input type='number' placeholder='请输入' />
+        </view>
+      </view>
+      <view class='address-infor'>
+        <view class='address-label'>服务地址</view>
+        <view class='address-text'> 
+          <picker mode="region" bindchange="bindRegionChange" value="{{region}}" custom-item="{{customItem}}">
+            <view class='inline-block margin-6'>
+              {{region[1]}}
+            </view>
+            <view class='inline-block' wx:if="{{region[2]}}">
+              {{region[2] ? region[2] : '请选择区'}}
+            </view>
+             <view class='inline-block gray' wx:else>
+              请选择区
+            </view>
+          </picker>
+        </view>
+      </view>
+      <view class='address-infor'>
+        <view class='address-label'>详细地址</view>
+        <view class='address-text'>
+          <input placeholder='请输入详细地址' />
+        </view>
+      </view>
+    </view>
+    <view class='add-new-address'>保存</view>
+  </view>
+</view>

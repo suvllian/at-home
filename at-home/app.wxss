@@ -50,7 +50,7 @@ image {
 
 /** color **/
 .gray {
-  color: #e6e6e6;
+  color: #808080;
 }
 .gray-word {
   color: #5e5e5e;
@@ -80,6 +80,7 @@ image {
   width: 100%;
 }
 .flex-ver-center-container {
+  height: 100%;
   display: flex;
   align-items: center;
 }
@@ -170,4 +171,8 @@ image {
   justify-content: center;
   color: #fff;
   background-color: #ff3d3d;
+}
+
+.inline-block {
+  display: inline-block;
 }

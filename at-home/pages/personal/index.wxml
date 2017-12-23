@@ -25,9 +25,11 @@
       </view>
     </view>
     <view class="order-row">
-      <view class="order-row-inner">
-        <view class="row-inner">我的服务地址</view>
-      </view>
+      <navigator url="/pages/address-list/index" hover-class="other-navigator-hover">
+        <view class="order-row-inner">
+          <view class="row-inner">我的服务地址</view>
+        </view>
+      </navigator>
     </view>
     <view class="order-row">
       <view class="contact-service">

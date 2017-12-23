@@ -1,0 +1,54 @@
+.address-page {
+  display: block;
+  min-height: 100vh;
+  height: 100%;
+  padding: 30rpx 22rpx;
+}
+.add-new-address {
+  padding: 16rpx 0;
+  font-size: 30rpx;
+  text-align: center;
+  color: #fff;
+  background-color: #5aa6b3;
+}
+.single-address {
+  padding: 0 20rpx;
+  margin: 22rpx 0;
+  background-color: #fff;
+}
+.address-infor {
+  display: flex;
+  padding: 26rpx 0;
+  font-size: 28rpx;
+  border-bottom: 1px solid #f3f4f6;
+}
+.address-infor:nth-child(4n) {
+  border: none;
+}
+.address-label {
+  flex: 1 1 22%;
+}
+.address-text {
+  flex: 1 1 78%;
+  display: flex;
+}
+.address-name {
+  flex: 1 1 30%;
+}
+.address-sex {
+  flex: 1 1 70%;
+}
+.not-choose-circle {
+  display: inline-block;
+  width: 20rpx;
+  height: 20rpx;
+  border: 2rpx solid #000;
+  border-radius: 50%;
+}
+.choose-circle {
+  display: inline-block;
+  width: 20rpx;
+  height: 20rpx;
+  background-color: #000;
+  border-radius: 50%;
+}
