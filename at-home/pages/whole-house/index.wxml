@@ -20,14 +20,16 @@
     </view>
     <view class="order-row">
       <view class="order-row-inner">
-        <view class="row-inner">预约时间</view>
-        <view class="row-inner">
+        <view class="row-inner-left">预约时间</view>
+        <view class="row-inner-right">
           <view class="flex-ver-center-container align-right">
             <picker mode='date' bindchange='bindDateChange' value='{{time}}' start='00:00' end='24:00'>
               <text class="margin-6">{{date}}</text>
             </picker>
-            <picker mode='time' bindchange='bindTimeChange' value='{{time}}' start='00:00' end='24:00'>
-              <text>{{time}}</text>
+            <picker mode="multiSelector" bindchange="bindMultiPickerChange" value="{{multiIndex}}" range="{{multiArray}}">
+              <view class="picker">
+                {{multiArray[0][multiIndex[0]]}}{{multiArray[1][multiIndex[1]]}}-{{multiArray[2][multiIndex[2]]}}点
+              </view>
             </picker>
             <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
           </view>
