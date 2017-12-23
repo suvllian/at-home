@@ -92,7 +92,7 @@
       <text class='font-weight-600'>待支付</text>
       <text class='red'>￥{{priceList[selectedIndex] - discountMoney}}</text>
     </view>
-    <view class='pay-container-button'>
+    <view class='pay-container-button' bindtap="payMoney">
       <text>现在预约</text>
     </view>
   </view>

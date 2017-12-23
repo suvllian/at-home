@@ -45,6 +45,21 @@ Page({
       time: e.detail.value
     })
   },
+  payMoney: function () {
+    wx.requestPayment({
+      timeStamp: `${new Date().getTime()}`,
+      nonceStr: 'sadsadsadsadsadsad',
+      package: 'prepay_id=*',
+      signType: '',
+      paySign: '',
+      success: function () {
+        console.log('success')
+      }, 
+      fail: function () {
+        console.log('fail')
+      }
+    })
+  },
   callService: function () {
     wx.makePhoneCall({
       phoneNumber: '15619216635'

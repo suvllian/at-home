@@ -1,8 +1,7 @@
 {
   "pages":[
-    "pages/whole-house/index",
     "pages/index/index",
-    
+    "pages/whole-house/index",   
     "pages/hour/index",
     "pages/personal/index",
     "pages/history/index",
