@@ -1,5 +1,7 @@
-.whole-house {
-  height: 100vh;
+.hour {
   display: block;
+  min-height: 100vh;
+  height: 100%;
+  padding-bottom: 100rpx;
   font-size: 32rpx;
 }

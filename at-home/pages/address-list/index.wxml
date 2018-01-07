@@ -3,7 +3,7 @@
     <navigator url='/pages/add-address/index'>
       <view class='add-new-address'>新增服务地址</view>
     </navigator>
-    <view class='single-address' wx:for="{{addressList}}" wx:for-item="address" wx:key="index">
+    <view class='single-address' wx:for="{{addressList}}" wx:for-item="address" wx:key="index" data-address-id='{{address.id}}' bindtap='clickAddress'>
       <view class='address-infor'>
         <view class='address-label'>联系人</view>
         <view class='address-text'>
@@ -20,7 +20,7 @@
       </view>
       <view class='address-infor'>
         <view class='address-label'>服务地址</view>
-        <view class='address-text'>西安市  {{address.area}}  区</view>
+        <view class='address-text'>西安市  {{address.area}} </view>
       </view>
       <view class='address-infor'>
         <view class='address-label'>详细地址</view>

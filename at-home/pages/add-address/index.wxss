@@ -37,6 +37,10 @@
 }
 .address-sex {
   flex: 1 1 70%;
+  display: flex;
+}
+.sex-type {
+  padding-right: 12rpx;
 }
 .not-choose-circle {
   display: inline-block;

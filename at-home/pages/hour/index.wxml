@@ -2,7 +2,7 @@
 <import src="../components/radius/top-radius.wxml" />
 <import src="../components/radius/bottom-radius.wxml" />
 
-<view class="container whole-house">
+<view class="container hour">
   <view class="flex-container">
     <image src="../../assets/images/hour_banner.jpg" mode="widthFix" class="banner-img"></image>
   </view>
@@ -69,6 +69,19 @@
           <text class="red font-weight-600">￥280</text>
         </view>
       </view>
+      <template is="circle" />
+    </view>
+    <view class="order-row">
+      <navigator url="/pages/address-list/index" hover-class="other-navigator-hover">
+        <view class="order-row-inner">
+          <view class="row-inner">选择服务地址</view>
+          <view class="row-inner">
+            <view class="flex-ver-center-container align-right">
+              <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+            </view>
+          </view>
+        </view>
+      </navigator>
       <template is="circle" />
     </view>
     <view class="order-row">

@@ -9,7 +9,7 @@ Page({
       success: function(res) {
         console.log('login success', res)
         wx.request({
-          url: 'http://127.0.0.1/1.php',
+          url: 'http://127.0.0.1/zaihu/index.php',
           data: {
             code: res.code
           }

@@ -1,9 +1,9 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/add-address/index",
     "pages/address-list/index",
-    "pages/whole-house/index",   
+    "pages/add-address/index",
+    "pages/whole-house/index",
     "pages/hour/index",
     "pages/personal/index",
     "pages/history/index",
