@@ -8,7 +8,6 @@ Page({
     coupons: 0,
     memberScale: 0.1,
     discountMoney: 0,
-    time: '00:00',
     multiArray: [['上午', '下午'], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]],
     multiIndex: [0, 8, 9],
     date: (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate(),
@@ -65,6 +64,7 @@ Page({
       multiIndex: e.detail.value
     })
   },
+  // 修改房屋面积
   bindPickerChange: function (e) {
     const selectedIndex = e.detail.value
     const { priceList, memberScale, coupons } = this.data
@@ -78,11 +78,6 @@ Page({
   bindDateChange: function (e) {
     this.setData({
       date: e.detail.value
-    })
-  },
-  bindTimeChange: function (e) {
-    this.setData({
-      time: e.detail.value
     })
   },
   payMoney: function () {

@@ -1,0 +1,16 @@
+<import src="../radius/circle-radius.wxml" />
+
+<view class="order-row">
+  <navigator url="/pages/address-list/index?type=choose" hover-class="other-navigator-hover">
+    <view class="order-row-inner">
+      <view class="row-inner">选择服务地址</view>
+      <view class="row-inner">
+        <view class="flex-ver-center-container align-right">
+          <text>{{addressName}}</text>
+          <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+        </view>
+      </view>
+    </view>
+  </navigator>
+  <template is="circle" />
+</view>

@@ -46,7 +46,11 @@ Page({
     ]
   },
   onLoad() {
-    
+    wx.getUserInfo({
+      success: function (res) {
+        app.globalData.userInfo = res.userInfo
+      }
+    })
   },
   getCards(idList) {
     let { cards } = this.data

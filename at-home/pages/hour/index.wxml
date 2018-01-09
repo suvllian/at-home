@@ -18,22 +18,7 @@
         </picker>
       </view>
     </view>
-    <view class="order-row">
-      <view class="order-row-inner">
-        <view class="row-inner">预约时间</view>
-        <view class="row-inner">
-          <view class="flex-ver-center-container align-right">
-            <picker mode='date' bindchange='bindDateChange' value='{{time}}' start='00:00' end='24:00'>
-              <text class="margin-6">{{date}}</text>
-            </picker>
-            <picker mode='time' bindchange='bindTimeChange' value='{{time}}' start='00:00' end='24:00'>
-              <text>{{time}}</text>
-            </picker>
-            <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
-          </view>
-        </view>
-      </view>
-    </view>
+    <include src="/pages/components/time/index" />
     <view class="order-row">
       <view class="order-row-inner">
         <view class="row-inner">抵金券</view>
@@ -71,19 +56,7 @@
       </view>
       <template is="circle" />
     </view>
-    <view class="order-row">
-      <navigator url="/pages/address-list/index" hover-class="other-navigator-hover">
-        <view class="order-row-inner">
-          <view class="row-inner">选择服务地址</view>
-          <view class="row-inner">
-            <view class="flex-ver-center-container align-right">
-              <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
-            </view>
-          </view>
-        </view>
-      </navigator>
-      <template is="circle" />
-    </view>
+    <include src="/pages/components/address/index" />
     <view class="order-row">
       <view class="contact-service">
         <view class="flex-ver-center-container" bindtap="callService">

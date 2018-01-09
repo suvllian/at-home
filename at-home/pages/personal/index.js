@@ -1,9 +1,13 @@
+const app = getApp()
+
 Page({
   data: {
     userInfo: {}
   },
   onLoad: function() {
-    console.log('onLoad')
+    this.setData({
+      userInfo: app.globalData.userInfo
+    })
 
     wx.login({
       success: function(res) {
@@ -17,16 +21,6 @@ Page({
       },
       fail: function(err) {
         console.log('login fail', err)
-      }
-    })
-
-    var that = this
-    wx.getUserInfo({
-      success: function(res) {
-        var userInfo = res.userInfo
-        that.setData({
-          userInfo: userInfo
-        })
       }
     })
   },

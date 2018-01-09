@@ -1,6 +1,7 @@
 /**app.wxss**/
 .container {
   height: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -103,10 +104,10 @@ image {
   flex: 1;
 }
 .row-inner-left {
-  flex: 1 1 40%;
+  flex: 1 1 35%;
 }
 .row-inner-right {
-  flex: 1 1 60%;
+  flex: 1 1 65%;
 }
 
 /** 圆角效果 **/

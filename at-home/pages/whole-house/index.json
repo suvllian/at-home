@@ -1,3 +1,6 @@
 {
-  "navigationBarTitleText": "全屋保洁"
+  "navigationBarTitleText": "全屋保洁",
+  "usingComponents": {
+    "pick": "/pages/components/time/index"
+  }
 }
