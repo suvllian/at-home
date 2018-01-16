@@ -1,0 +1,14 @@
+.history {
+  display: block;
+  height: 100%;
+  min-height: 100vh;
+}
+.order-row-inner {
+  display: block;
+}
+.order-text {
+  padding: 6rpx 0;
+}
+.section {
+  padding-bottom: 0;
+}

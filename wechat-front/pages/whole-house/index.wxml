@@ -1,0 +1,75 @@
+<import src="../components/radius/circle-radius.wxml" />
+<import src="../components/radius/top-radius.wxml" />
+<import src="../components/radius/bottom-radius.wxml" />
+
+<view class="container whole-house">
+  <view class="flex-container">
+    <image src="../../assets/images/index_banner.jpg" mode="widthFix" class="banner-img"></image>
+  </view>
+  <view class="section">
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">房屋面积</view>
+        <picker mode='selector' bindchange='bindPickerChange' value='{{selectedIndex}}' range='{{typeNameArray}}' class="row-inner text-right">
+          <view class="flex-ver-center-container align-right">
+            <text>{{typeNameArray[selectedIndex]}}</text>
+            <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+          </view>
+        </picker>
+      </view>
+    </view>
+    <include src="/pages/components/time/index" />
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">抵金券</view>
+        <view class="row-inner">
+          <view class="flex-ver-center-container align-right">
+            <text class="red font-weight-600" wx:if="{{coupons}}">-{{coupons}}</text>
+            <text class="red font-weight-600" wx:else>无抵金券</text>
+            <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+          </view>
+        </view>
+      </view>
+      <template is="bottom" />
+    </view>
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">
+          <view class="flex-ver-center-container">
+            <image src="./../../assets/images/vip_icon.png" class="icon"></image>
+            <text>会员折扣</text>
+          </view>
+        </view>
+        <view class="flex-ver-center-container align-right">
+          <text class="red font-weight-600">-￥{{priceList[selectedIndex] * memberScale}}</text>
+        </view>
+      </view>
+      <template is="circle" />
+    </view>
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner text-right">
+          <text class="font-28 gray-word margin-6">总计￥{{priceList[selectedIndex]}}  </text>
+          <text class="font-28 gray-word margin-6">优惠￥{{priceList[selectedIndex] * memberScale}}</text>
+          <text class='font-weight-600'>实付</text>
+          <text>￥{{priceList[selectedIndex] * (1 - memberScale)}}</text>
+        </view>
+      </view>
+      <template is="circle" />
+    </view>
+    <include src="/pages/components/address/index" />
+    <include src="/pages/components/call-service/index" />
+  </view>
+  <view class='pay-container'>
+    <view class='pay-container-left'>
+      <text class='gray-word'>为您省下￥{{discountMoney}}元</text>
+    </view>
+    <view class='pay-container-medium'>
+      <text class='font-weight-600'>待支付</text>
+      <text class='red'>￥{{priceList[selectedIndex] - discountMoney}}</text>
+    </view>
+    <view class='pay-container-button' bindtap="payMoney">
+      <text>现在预约</text>
+    </view>
+  </view>
+</view>

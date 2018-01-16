@@ -1,0 +1,104 @@
+<import src="../components/radius/circle-radius.wxml" />
+<import src="../components/radius/top-radius.wxml" />
+<import src="../components/radius/bottom-radius.wxml" />
+
+<view class="container kitchen">
+  <view class="flex-container">
+    <image src="../../assets/images/kitchen_banner.jpg" mode="widthFix" class="banner-img"></image>
+  </view>
+  <view class="section">
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner-left">厨房、卫生间</view>
+        <view class="row-inner-right">
+          <view class="flex-ver-center-container align-right" bindtap="togglePopup">
+            <text>{{showText}}</text>
+            <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+    <include src="/pages/components/time/index" />
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">抵金券</view>
+        <view class="row-inner">
+          <view class="flex-ver-center-container align-right">
+            <text class="red font-weight-600" wx:if="{{coupons}}">-{{coupons}}</text>
+            <text class="red font-weight-600" wx:else>无抵金券</text>
+            <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+          </view>
+        </view>
+      </view>
+      <template is="bottom" />
+    </view>
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">
+          <view class="flex-ver-center-container">
+            <image src="./../../assets/images/vip_icon.png" class="icon"></image>
+            <text>会员折扣</text>
+          </view>
+        </view>
+        <view class="flex-ver-center-container align-right">
+          <text class="red font-weight-600">-￥{{totalFee * memberScale}}</text>
+        </view>
+      </view>
+      <template is="circle" />
+    </view>
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner text-right">
+          <text class="font-28 gray-word margin-6">总计￥{{totalFee}}  </text>
+          <text class="font-28 gray-word margin-6">优惠￥{{totalFee * memberScale}}</text>
+          <text class='font-weight-600'>实付</text>
+          <text>￥{{totalFee * (1 - memberScale)}}</text>
+        </view>
+      </view>
+      <template is="circle" />
+    </view>
+    <include src="/pages/components/address/index" />
+    <include src="/pages/components/call-service/index" />
+  </view>
+
+  <view class="show-popup" hidden="{{hideSelectPopup}}" >
+    <view class="popup-mask" bindtap="closePopupTap"></view>
+    <view class="popup-contents">
+      <view class="pick-number">
+        <view class="pick-number-label">厨房</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{kitchenCount == minCount ? 'disabled-btn': ''}}" bindtap="decreaseKitchen">-</view>
+            <view class="pick-input">
+              <input type="number" value="{{kitchenCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{kitchenCount == maxCount ? 'disabled-btn': ''}}" bindtap="increaseKitchen">+</view>
+        </view>
+      </view>
+      <view class="pick-number">
+        <view class="pick-number-label">卫生间</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{bathroomCount == minCount ? 'disabled-btn': ''}}" bindtap="decreaseBathroom">-</view>
+            <view class="pick-input">
+                <input  type="number" value="{{bathroomCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{bathroomCount== maxCount ? 'disabled-btn': ''}}" bindtap="increaseBathroom">+</view>
+        </view>
+      </view>  
+      <view class="popup-submit-btn" bindtap="submitNumber">
+        确定
+      </view>                   
+    </view>
+  </view>
+  <view class='pay-container'>
+    <view class='pay-container-left'>
+      <text class='gray-word'>为您省下￥{{discountMoney}}元</text>
+    </view>
+    <view class='pay-container-medium'>
+      <text class='font-weight-600'>待支付</text>
+      <text class='red'>￥{{totalFee - discountMoney}}</text>
+    </view>
+    <view class='pay-container-button' bindtap="payMoney">
+      <text>现在预约</text>
+    </view>
+  </view>
+</view>

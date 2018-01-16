@@ -1,0 +1,20 @@
+{
+  "pages":[
+    "pages/index/index",
+    "pages/kitchen/index",
+    "pages/wash-glass/index",
+    "pages/login/index",
+    "pages/hour/index",
+    "pages/whole-house/index",
+    "pages/address-list/index",
+    "pages/add-address/index",
+    "pages/personal/index",
+    "pages/history/index"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "在乎*为家",
+    "navigationBarTextStyle":"black"
+  }
+}

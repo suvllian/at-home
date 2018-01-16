@@ -1,0 +1,21 @@
+<view class='login'>
+  <view class='login-title'>登录/注册</view>
+  <view>
+    <view>
+      <input type='number' placeholder='请输入手机号' class='login-input' bindinput='phoneInput' />
+    </view>
+    <view>
+      <input type='number' placeholder='请输入验证码' class='login-input' bindinput='codeInput'>
+        <view class='get-code-btn-container'>
+          <view class='get-code-btn' bindtap='getCode'>获取验证码</view>
+        </view>
+      </input>
+    </view>
+  </view>
+  <view class='login-btn-container'>
+    <view class='login-btn' bindtap='register'>下一步</view>
+  </view>
+  <view class='login-bottom'>
+    <view>问题反馈：029-81111852</view>
+  </view>
+</view>

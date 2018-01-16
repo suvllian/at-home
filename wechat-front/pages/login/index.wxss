@@ -1,0 +1,59 @@
+.login {
+  height: 100vh;
+  background-color: #f3f4f6;
+}
+.login-title {
+  height: 22vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 2rpx;
+  text-align: center;
+  font-size: 42rpx;
+}
+.login-input {
+  position: relative;
+  padding: 26rpx 34rpx;
+  font-size: 32rpx;
+  background-color: #fff;
+}
+.login-input:first-child {
+  border-bottom: 1px solid #f3f4f6;
+}
+.login-btn-container {
+  padding: 36rpx 48rpx;
+}
+.login-btn {
+  padding: 16rpx 0;
+  border-radius: 6rpx;
+  font-size: 30rpx;
+  text-align: center;
+  color: #fff;
+  background-color: #5aa6b3;
+}
+.login-bottom {
+  position: fixed;
+  width: 100%;
+  padding: 30rpx;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  font-size: 26rpx;
+}
+
+/* 获取验证码按钮 */
+.get-code-btn-container {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  right: 0;
+  padding: 22rpx 34rpx;
+  z-index: 10;
+}
+.get-code-btn {
+  padding: 10rpx;
+  border-radius: 5rpx;
+  font-size: 28rpx;
+  background-color: #535353;
+  color: #fff;
+}

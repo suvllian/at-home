@@ -1,0 +1,10 @@
+.whole-house {
+  display: block;
+  min-height: 100vh;
+  height: 100%;
+  padding-bottom: 100rpx;
+}
+.section {
+  width: 100%;
+  padding: 26rpx 22rpx 36rpx 22rpx;
+}
