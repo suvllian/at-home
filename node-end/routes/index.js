@@ -1,192 +1,103 @@
 var express = require('express');
 var request = require('request');
 var crypto = require('crypto');
-var mysql = require('mysql');
 var UUId = require('uuid');
+var xml2js = require('xml2js');
+var xmlParser = new xml2js.Parser({explicitArray : false, ignoreAttrs : true});
+var xmlBuilder = new xml2js.Builder();
 var router = express.Router();
 var utils = require('./../utils/index.js');
 var Model = require('./../models/model');
 var config = require('./../config/index.js');
 var services = require('./../services/index');
-// 腾讯云短信
-var QcloudSms = require('qcloudsms_js');
-var qcloudsms = QcloudSms(config.SMSAPPID, config.SMSAPPKEY);
-var smsSender = qcloudsms.SmsSingleSender();
+
+//
+function getSignCode() {
+
+}
 
 router.get('/', function(req, res, next) {
   res.json({ author: 'suvllian'})
 })
 
+
 router.post('/pay_order', function(req, res, next) {
   var { orderId, loginCode, totalFee } = req.body
+
+  if (!orderId || !totalFee) {
+    return utils.failRes(res)
+  }
 
   services.getOpenId(loginCode).then(result => {
     var { openid } = result
 
+    if (!openid) {
+      return utils.failRes(res)
+    }
+
+    const params = {
+      // 小程序id
+      appid: config.APPID,
+      // 
+      body: '在乎',
+      // 商户号
+      mch_id: config.PAYUSERID,
+      // 随机字符串
+      nonce_str: UUId.v1().substring(0, 31),
+      // 通知地址
+      notify_url: 'https://zaihu.zhangguanzhang.com/order_success',
+      // 用户标识
+      openid: openid,
+      // 商户订单号
+      out_trade_no: orderId,
+      // 终端ip
+      spbill_create_ip: '120.79.91.119',
+      // 标价金额
+      total_fee: parseInt(totalFee * 100),
+      //
+      trade_type: 'JSAPI',
+      // 
+      key: config.PAYSECRET    
+    }
+
+    var sign = crypto.createHash("md5").update(utils.parseObjectParams(params)).digest('hex').toString()
+
+    var requestValue = '<xml>' + 
+      '<appid>' + params.appid + '</appid>' +
+      '<mch_id>' + params.mch_id + '</mch_id>' +
+      '<nonce_str>' + params.nonce_str + '</nonce_str>' +
+      '<body>' + params.body + '</body>' +
+      '<out_trade_no>' + params.out_trade_no + '</out_trade_no>' +
+      '<total_fee>' + params.total_fee + '</total_fee>' +
+      '<spbill_create_ip>' + params.spbill_create_ip + '</spbill_create_ip>' +
+      '<notify_url>' + params.notify_url + '</notify_url>' +
+      '<trade_type>' + params.trade_type + '</trade_type>' +
+      '<openid>' + params.openid + '</openid>' + 
+      '<sign>' + sign + '</sign>' +
+      '</xml>'
+
     request.post({
       url: config.PAYURL,
-      form: {
-        appid: 'payload',
-        mch_id: '',
-        sub_appid: config.APPID,
-        sub_mch_id: '',
-        // 随机字符串
-        nonce_str: UUId.v1(),
-        sign: '',
-        sign_type: 'MD5',
-        body: '',
-        out_trade_no: '',
-        total_fee: totalFee * 100,
-        // 终端ip
-        spbill_create_ip: '',
-        notify_url: '',
-        trade_type: 'JSAPI',
-        openid: openid
-      }
+      body: requestValue        
     }, function(error, orderResult, data) {
-      console.log(data)
-    })
-  })
-
-  return utils.successRes(res)
-})
-
-// 登录
-router.post('/login', function(req, res, next) {
-  var { loginCode } = req.body
-
-  services.getOpenId(loginCode).then(result => {
-    var { openid: openId, session_key } = result
-
-    if (!openId) {
-      return utils.failRes(res, {
-        msg: '登录失败'
-      })
-    }
-
-    // 对session_key进行加密
-    var sha1 = JSON.stringify(crypto.createHash('sha1').update(session_key).digest('hex'))
-
-    new Model('query_user_is_register').operate([openId]).then(isRegisterResult => {
-      if (!isRegisterResult || !isRegisterResult.length) {
-        return utils.failRes(res, {
-          noRegister: true,
-          msg: '登录失败'
-        })
-      } else {
-        return utils.successRes(res, {
-          memberType: isRegisterResult && isRegisterResult[0].member_type,
-          signature: sha1
-        })
-      }
-    })
-  })
-})
-
-// 获取验证码
-router.post('/get_phone_code', function(req, res, next) {
-  var { loginCode, phoneNumber } = req.body
-
-  if (!phoneNumber) {
-    return utils.failRes(res, {
-      msg: '获取验证码失败，无法或许用户信息'
-    })
-  }
-
-  // 验证一分钟内是否发过验证码
-  var currentTime = new Date().getTime() - 60000
-  new Model('query_has_sent_code').operate([currentTime, phoneNumber]).then(queryHasSentResult => {
-    if (queryHasSentResult && queryHasSentResult.length) {
-      return utils.failRes(res, {
-        msg: '一分钟内只能获取一次验证码'
-      })
-    }
-
-    services.getOpenId(loginCode).then(result => {
-      var { openid } = result
-      var verifyCode = utils.MathRand()
-      var createTime = new Date().getTime()
-      var invalidTime = createTime + config.SMSEFFECTIVETIME
-  
-      new Model('insert_verify_code').operate([createTime, invalidTime, verifyCode, openid, phoneNumber, 0]).then(result => {
-        smsSender.sendWithParam('86', phoneNumber, config.SMSTEMPLETEID, [verifyCode], '', '', '', function(err, getSmsRes, resData) {
-          var { result: isGetSmsSuccess } = resData
-          console.log(resData, isGetSmsSuccess)
-          if (isGetSmsSuccess !== 0) {
-            return utils.failRes(res, {
-              msg: '获取验证码失败'
+      xmlParser.parseString(data, function(err, finalResult) {
+        if (!err) {
+          var wechatPayResult = finalResult['xml']
+          if (wechatPayResult) {
+            console.log(wechatPayResult)
+            return utils.successRes(res, {
+              data: {
+                prepay_id: wechatPayResult['prepay_id'],
+                nonce_str: wechatPayResult['nonce_str']
+              }
             })
           } else {
-            return utils.successRes(res)
+            return utils.failRes(res)
           }
-        })
-      }).catch(error => {
-        utils.failRes(res)
-      })
-    })
-  })
-})
-
-// 注册
-router.post('/register', function(req, res, next) {
-  var { phoneNumber, verifyCode, loginCode, nickName = '' } = req.body
-
-  if (!phoneNumber || !verifyCode || !loginCode || !nickName) {
-    return utils.failRes(res, {
-      msg: '注册失败，信息不完整'
-    })
-  }
-
-  services.getOpenId(loginCode).then(openIdResult => {
-    var { openid, session_key } = openIdResult
-
-    if (!openid) {
-      return utils.failRes(res, {
-        msg: '注册失败，获取用户ID失败'
-      })
-    }
-
-    var currentTime = new Date().getTime()
-
-    new Model('query_verify_code').operate([currentTime, openid, phoneNumber]).then(queryVerifyCodeResult => {
-      if (queryVerifyCodeResult && queryVerifyCodeResult.length) {
-        var { verify_code: verifyCodeResult, id: verifyCodeId } = queryVerifyCodeResult[0]
-        if (verifyCodeResult === verifyCode) {
-          // 验证通过
-
-          // 对session_key进行加密
-          var sersionKeySha1 = JSON.stringify(crypto.createHash('sha1').update(session_key).digest('hex'))
-          var openIdSha1 = JSON.stringify(crypto.createHash('sha1').update(openid).digest('hex'))
-
-          new Model('update_verify_code_to_invalid').operate([verifyCodeId]).then(updateVerifyCodeResult => {
-            new Model('insert_user').operate([nickName, openid, phoneNumber, 0]).then((result = {}) => {
-              return result.insertId ? utils.successRes(res, {
-                msg: '注册成功',
-                signature: sersionKeySha1
-              }) : utils.failRes(res, {
-                msg: '注册失败，添加用户失败'
-              })
-            }).catch(error => {
-              return utils.failRes(res, {
-                msg: '注册失败，添加用户失败。'
-              })
-            })
-          }).catch(error => {
-            console.log(error)
-          })
         } else {
-          return utils.failRes(res, {
-            msg: '无效验证码'
-          })
+          return utils.failRes(res)
         }
-      } else {
-        return utils.failRes(res, {
-          msg: '无效验证码'
-        })
-      }
-    }).catch(error => {
-      console.log(error)
-      return utils.failRes(res)
+      })
     })
   })
 })
@@ -203,16 +114,7 @@ router.get('/get_order_tpye_info/:id', function(req, res, next) {
 })
 
 // 获取订单列表
-router.get('/get_order_list/:user_id', function(req, res, next) {
-  var userId = req.params.user_id
-
-  new Model('query_order_list').operate([userId]).then(result => {
-    utils.responseJSON(res, result, 'get')
-  })
-})
-
-// 获取地址
-router.get('/get_address_list/:login_code', function(req, res, next) {
+router.get('/get_order_list/:login_code', function(req, res, next) {
   var loginCode = req.params.login_code
 
   if (!loginCode) {
@@ -226,73 +128,41 @@ router.get('/get_address_list/:login_code', function(req, res, next) {
 
     if (!openid) {
       return utils.failRes(res, {
-        msg: '获取地址失败'
+        msg: '获取订单列表失败'
       })
     }
 
-    new Model('query_address').operate([openid]).then(result => {
+    new Model('query_order_list').operate([openid]).then(result => {
       utils.successRes(res, {
         data: result
       })
     })
     .catch(error => {
       return utils.failRes(res, {
-        msg: '查询地址失败'
+        msg: '获取订单列表失败'
       })
     })
   })
 })
 
-// 添加地址
-router.post('/add_address', function(req, res, next) {
-  var { name, isMale, phone, area, specificAddress, loginCode } = req.body 
+// 获取卡券列表
+router.get('/get_card_list', function(req, res, next) {
 
-  if (!loginCode || !name || !isMale || !phone || !area || !specificAddress) {
+  new Model('query_coupons_list').operate().then(result => {
+    return utils.successRes(res, {
+      data: result
+    })
+  }).catch(error => {
     return utils.failRes(res, {
-      msg: '获取loginCode失败'
-    })
-  }
-
-  services.getOpenId(loginCode).then(result => {
-    var { openid } = result
-
-    if (!openid) {
-      return utils.failRes(res, {
-        msg: '添加地址失败'
-      })
-    }
-
-    new Model('query_userid_by_openid').operate([openid]).then(queryUserIdResult => {
-      if (queryUserIdResult && queryUserIdResult.length) {
-        var { id: userId } = queryUserIdResult[0]
-
-        new Model('insert_address').operate([name, isMale, phone, area, specificAddress, userId]).then(result => {
-          return utils.successRes(res)
-        })
-        .catch(error => {
-          return utils.failRes(res, {
-            msg: '添加地址失败'
-          })
-        })
-      } else {
-        return utils.failRes(res, {
-          msg: '添加地址失败'
-        })
-      }
-    })
-    .catch(error => {
-      console.log(error)
-      return utils.failRes(res, {
-        msg: '添加地址失败'
-      })
+      msg: '获取卡券列表失败'
     })
   })
-  .catch(error => {
-    console.log(error)
-    return utils.failRes(res, {
-      msg: '添加地址失败'
-    })
-  })
+})
+
+
+
+router.post('/order_success', function(req, res, next) {
+  console.log(req.body)
 })
 
 module.exports = router;

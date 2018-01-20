@@ -1,15 +1,34 @@
 import { getOrderTypeInfo, login } from '../../api/index.js'
 import { serviceNumber } from '../../config.js'
 const pickArray = ['一', '两', '三', '四', '五', '六', '七', '八', '九', '十']
+const typeObject = {
+  '1': 'sofaCount',
+  '2': 'carpetCount',
+  '3': 'floorCount',
+  '4': 'cleanCount'
+}
+const priceObject = {
+  '沙发': 'sofaPrice',
+  '地毯': 'carpetPrice',
+  '地板': 'floorPrice',
+  '除螨': 'cleanPrice'
+}
 const app = getApp()
 
 Page({
   data: {
     hideSelectPopup: true,
-    kitchenCount: 1,
-    kitchenPrice: 0,
-    bathroomCount: 1,
-    bathroomPrice: 0,
+    // 家居数量
+    sofaCount: 1,
+    carpetCount: 0,
+    floorCount: 0,
+    cleanCount: 0,
+    // 家居价格
+    sofaPrice: 0,
+    carpetPrice: 0,
+    floorPrice: 0,
+    cleanPrice: 0,
+
     totalFee: 0,
     minCount: 0,
     maxCount: 10,
@@ -33,8 +52,7 @@ Page({
   onLoad: function () {
     this.setNumber()
 
-    let typeNameArray = [], priceList = []
-    const { coupons, kitchenCount, bathroomCount } = this.data
+    const { coupons, sofaCount } = this.data
     const $that = this
     const { userInfo = {} } = app.globalData
     const memberScale = userInfo && userInfo.memberTypeInfo && userInfo.memberTypeInfo.memberScale || 0
@@ -45,26 +63,24 @@ Page({
 
     getOrderTypeInfo({
       query: {
-        orderType: 4
+        orderType: 6
       },
       success: res => {
         const { data } = res
         const { data: list = [] } = data
-        let discountMoney = 0, totalFee = 0, kitchenPrice = 0, bathroomPrice = 0
+        let discountMoney = 0, totalFee = 0
+
+        let newPriceObject = {}
 
         list.forEach(item => {
-          if (item.type_name === '厨房') {
-            kitchenPrice = item.type_price
-          } else if (item.type_name === '卫生间') {
-            bathroomPrice = item.type_price
-          }
+          newPriceObject[priceObject[item.type_name]] = item.type_price
         })
 
-        totalFee = bathroomCount * bathroomPrice + kitchenCount * kitchenPrice
+        totalFee = sofaCount * newPriceObject['sofaPrice']
         discountMoney = (totalFee * memberScale + coupons).toFixed(2)
 
         $that.setData({
-          kitchenPrice, bathroomPrice, totalFee,
+          ...newPriceObject, totalFee,
           discountMoney: !isNaN(discountMoney) ? discountMoney : 0
         })
       },
@@ -89,69 +105,65 @@ Page({
       date: e.detail.value
     })
   },
-  callService: function () {
-    wx.makePhoneCall({
-      phoneNumber: '15619216635'
-    })
-  },
   togglePopup: function() {
     var isHide = this.data.hideSelectPopup
     this.setData({
       hideSelectPopup: !isHide
     })
   },
-  decreaseKitchen: function() {
-    if (this.data.kitchenCount > this.data.minCount) {
-      var currentCount = this.data.kitchenCount;
-      currentCount--;
-      this.setData({
-        kitchenCount: currentCount
-      })
+  // 减少
+  decreaseCount: function(e) {
+    const { electricType } = e.target && e.target.dataset
+    const { minCount } = this.data
+    const currentCount = this.data[typeObject[electricType]]
+
+    if (currentCount > minCount) {
+      const data = {}
+      data[typeObject[electricType]] = currentCount - 1
+      this.setData(data)
     }
   },
-  increaseKitchen: function () {
-    if (this.data.kitchenCount < this.data.maxCount) {
-      var currentCount = this.data.kitchenCount;
-      currentCount++;
-      this.setData({
-        kitchenCount: currentCount
-      })
-    }
-  },
-  decreaseBathroom: function () {
-    if (this.data.bathroomCount > this.data.minCount) {
-      var currentCount = this.data.bathroomCount;
-      currentCount--;
-      this.setData({
-        bathroomCount: currentCount
-      })
-    }
-  },
-  increaseBathroom: function () {
-    if (this.data.bathroomCount < this.data.maxCount) {
-      var currentCount = this.data.bathroomCount;
-      currentCount++;
-      this.setData({
-        bathroomCount: currentCount
-      })
+  // 增加
+  increaseCount: function (e) {
+    const { electricType } = e.target && e.target.dataset
+    const { maxCount } = this.data
+    const currentCount = this.data[typeObject[electricType]]
+
+    if (currentCount < maxCount) {
+      const data = {}
+      data[typeObject[electricType]] = currentCount + 1
+      this.setData(data)
     }
   },
   setNumber: function () {
-    const { kitchenCount, kitchenPrice, bathroomCount, bathroomPrice, memberScale, coupons }  = this.data
-    const totalFee = bathroomCount * bathroomPrice + kitchenCount * kitchenPrice
-    const discountMoney = (totalFee * memberScale + coupons).toFixed(2)
-    let showText = ''
+    const { coupons, sofaCount, carpetCount, floorCount, cleanCount, memberScale,
+      sofaPrice, carpetPrice, floorPrice, cleanPrice }  = this.data
 
-    if (kitchenCount && bathroomCount) {
-      showText = `厨房${pickArray[kitchenCount - 1]}间、卫生间${pickArray[bathroomCount - 1]}间`
-    } else if (kitchenCount && !bathroomCount) {
-      showText = `厨房${pickArray[kitchenCount - 1]}间`
-    } else if (!kitchenCount && bathroomCount) {
-      showText = `卫生间${pickArray[bathroomCount - 1]}间`
+    const totalFee = sofaCount * sofaPrice +
+      carpetCount * carpetPrice +
+      floorCount * floorPrice +
+      cleanCount * cleanPrice
+    const discountMoney = (totalFee * memberScale + coupons).toFixed(2)
+    let showText = []
+
+    if (sofaCount) {
+      showText.push(`沙发${pickArray[sofaCount - 1]}个`)
+    } 
+    if (carpetCount) {
+      showText.push(`地毯${pickArray[carpetCount - 1]}间`)
+    } 
+    if (floorCount) {
+      showText.push(`地板${pickArray[floorCount - 1]}间`)
+    }
+    if (cleanCount) {
+      showText.push(`除螨${pickArray[cleanCount - 1]}次`)
     }
 
+    let showTextString = showText.join('、')
+
     this.setData({
-      showText, totalFee, discountMoney
+      totalFee, discountMoney,
+      showText: showTextString.length > 8 ? showTextString.substring(0, 9) + '...' : showTextString
     })
   },
   submitNumber: function () {
@@ -195,7 +207,6 @@ Page({
                   title: '成功...'
                 })
               }
-
             }
           })
         }

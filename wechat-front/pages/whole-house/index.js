@@ -1,9 +1,15 @@
 import { getOrderTypeInfo, pay, login }  from '../../api/index.js'
+import { SERVICENUMBER, APPID, PAYKEY, TIMEPICKERVALUE } from '../../config.js'
+import { getCurrentDate } from '../../utils/util.js'
+import { wxPay } from '../../utils/pay.js'
 var app = getApp()
 
 Page({
   data: {
+    // 选项信息
     typeNameArray: [],
+    // 选项id
+    typeIdArray: [],
     priceList: [0],
     selectedIndex: 0,
     coupons: 0,
@@ -11,14 +17,14 @@ Page({
     discountMoney: 0,
     // 会员折扣率
     memberScale: 0,
-    multiArray: [['上午', '下午'], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]],
+    multiArray: TIMEPICKERVALUE,
     multiIndex: [0, 8, 9],
-    date: (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate(),
+    date: getCurrentDate().join('-'),
     addressName: ''
   },
   onLoad () {
     let { coupons, selectedIndex } = this.data
-    let typeNameArray = [], priceList = []
+    let typeNameArray = [], typeIdArray = [], priceList = []
     const $that = this
     const { userInfo = {} } = app.globalData
     const memberScale = userInfo && userInfo.memberTypeInfo && userInfo.memberTypeInfo.memberScale || 0
@@ -40,12 +46,14 @@ Page({
 
         list.map(item => {
           typeNameArray.push(item.type_name)
+          typeIdArray.push(item.id)
           priceList.push(item.type_price)
         })
 
         discountMoney = (priceList[selectedIndex] * memberScale + coupons).toFixed(2)
 
         $that.setData({
+          typeIdArray,
           typeNameArray, priceList: priceList.length ? priceList : [0],
           discountMoney: !isNaN(discountMoney) ? discountMoney : 0
         })
@@ -89,81 +97,42 @@ Page({
     })
   },
   payMoney: function () {
-    wx.login({
-      success: function(res) {
-        const { code } = res
+    // 获取订单信息
+    const { priceList, selectedIndex, typeIdArray, date, multiArray, multiIndex, discountMoney } = this.data
 
-        if (code) {
-          login({
-            method: 'POST',
-            data: {
-              loginCode: code
-            },
-            success: res => {
-              const { success = false, msg = '', noRegister = false } = res.data
-              const { userInfo } = app.globalData
+    // 总价
+    const totalFee = priceList[selectedIndex] - discountMoney 
+    // 订单类型信息id
+    const orderTypeId = typeIdArray[selectedIndex]
+    // 订单创建时间
+    const createTime = new Date().getTime()
+    // 地址信息
+    const { choosedAddress } = app.globalData
+    // 预约时间
+    const orderTime = `${date} ${multiArray[0][multiIndex[0]]}${multiArray[1][multiIndex[1]]}-${multiArray[2][multiIndex[2]]}点`
 
-              // 登录失败
-              if (!success) {
-                if (noRegister) {
-                  // 未注册
-                  wx.navigateTo({
-                    url: '/pages/login/index'
-                  })
-                } else {
-                  console.log(msg)
-                  return 
-                }
-              }
+    // 预约时间校验
+    const formatTime = `${date} ${multiArray[1][multiIndex[1]]}:00:00`
+    if (new Date(formatTime).getTime() < createTime) {
+      console.log('选择正确的时间')
+    }
 
-              // if (data && data.length) {
-              //   app.globalData.userInfo = {
-              //     ...userInfo,
-              //     memberTypeInfo: {
-              //       memberType: data[0].member_type,
-              //       memberScale: 0.1
-              //     }
-              //   }
-              // }
-            }
-          })
-          // pay({
-          //   method: 'POST',
-          //   data: {
-          //     orderId: new Date().getTime(),
-          //     totalFee: 0.01,
-          //     loginCode: code
-          //   },
-          //   success: function(res) {
-          //     console.log(res)
-          //   },
-          //   fail: function(err) {
-          //     console.log(err)
-          //   }
-          // })
-        }
-      }
-    })
-    // 传 订单号 金额 登录信息到后端
-    
+    // 未选择服务地址
+    if (!choosedAddress) {
+      wx.navigateTo({
+        url: '/pages/address-list/index?type=choose'
+      })
+      return 
+    }
 
-    // wx.requestPayment({
-    //   timeStamp: `${new Date().getTime()}`,
-    //   nonceStr: 'sadsadsadsadsadsad',
-    //   package: 'prepay_id=*',
-    //   signType: '',
-    //   paySign: '',
-    //   success: function () {
-    //     console.log('success')
-    //   }, 
-    //   fail: function () {
-    //     console.log('fail')
-    //   }
-    // })
+    const orderType = '1-1'
+    const orderId = `${orderType}-${getCurrentDate().join('')}${createTime}`
+
+    wxPay(orderId, 0.01, '/pages/index/index')
   },
   callService: function () {
     wx.makePhoneCall({
-      phoneNumber: '15619216635'
+      phoneNumber: SERVICENUMBER
     })
   }
 })

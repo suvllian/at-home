@@ -1,4 +1,4 @@
-import { getOrderTypeInfo } from '../../api/index.js'
+import { getOrderTypeInfo, login } from '../../api/index.js'
 import { serviceNumber } from '../../config.js'
 var app = getApp()
 
@@ -118,6 +118,10 @@ Page({
                   console.log(msg)
                   return
                 }
+              } else {
+                wx.showToast({
+                  title: '成功...'
+                })
               }
 
             }

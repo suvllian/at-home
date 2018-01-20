@@ -12,3 +12,10 @@
 .section {
   padding-bottom: 0;
 }
+.show-btn {
+  width: 60%;
+  margin: 0 auto;
+  padding: 30rpx 0;
+  font-size: 30rpx;
+  text-align: center;
+}

@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var http = require('http');
 var index = require('./routes/index.js');
+var auth = require('./routes/auth.js');
+var address = require('./routes/address.js');
 
 var app = express();
 
@@ -15,6 +17,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/', index);
+// 权限操作：登录、注册、获取验证码
+app.use('/auth/', auth);
+// 地址：添加地址，获取地址
+app.use('/address/', address);
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

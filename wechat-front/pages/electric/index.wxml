@@ -1,0 +1,165 @@
+<import src="../components/radius/circle-radius.wxml" />
+<import src="../components/radius/top-radius.wxml" />
+<import src="../components/radius/bottom-radius.wxml" />
+
+<view class="container kitchen">
+  <view class="flex-container">
+    <image src="../../assets/images/electric_banner.jpg" mode="widthFix" class="banner-img"></image>
+  </view>
+  <view class="section">
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner-left">家电清洗</view>
+        <view class="row-inner-right">
+          <view class="flex-ver-center-container align-right" bindtap="togglePopup">
+            <text>{{showText}}</text>
+            <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+    <include src="/pages/components/time/index" />
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">抵金券</view>
+        <view class="row-inner">
+          <view class="flex-ver-center-container align-right">
+            <text class="red font-weight-600" wx:if="{{coupons}}">-{{coupons}}</text>
+            <text class="red font-weight-600" wx:else>无抵金券</text>
+            <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+          </view>
+        </view>
+      </view>
+      <template is="bottom" />
+    </view>
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner">
+          <view class="flex-ver-center-container">
+            <image src="./../../assets/images/vip_icon.png" class="icon"></image>
+            <text>会员折扣</text>
+          </view>
+        </view>
+        <view class="flex-ver-center-container align-right">
+          <text class="red font-weight-600">-￥{{totalFee * memberScale}}</text>
+        </view>
+      </view>
+      <template is="circle" />
+    </view>
+    <view class="order-row">
+      <view class="order-row-inner">
+        <view class="row-inner text-right">
+          <text class="font-28 gray-word margin-6">总计￥{{totalFee}}  </text>
+          <text class="font-28 gray-word margin-6">优惠￥{{totalFee * memberScale}}</text>
+          <text class='font-weight-600'>实付</text>
+          <text>￥{{totalFee * (1 - memberScale)}}</text>
+        </view>
+      </view>
+      <template is="circle" />
+    </view>
+    <include src="/pages/components/address/index" />
+    <include src="/pages/components/call-service/index" />
+  </view>
+
+  <view class="show-popup" hidden="{{hideSelectPopup}}" >
+    <view class="popup-mask" bindtap="togglePopup"></view>
+    <view class="popup-contents">
+      <view class="pick-number">
+        <view class="pick-number-label">挂式空调</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{hangAirConditionCount == minCount ? 'disabled-btn': ''}}" data-electric-type='1' bindtap="decreaseCount">-</view>
+            <view class="pick-input">
+              <input type="number" value="{{hangAirConditionCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{hangAirConditionCount == maxCount ? 'disabled-btn': ''}}" data-electric-type='1' bindtap="increaseCount">+</view>
+        </view>
+      </view>
+      <view class="pick-number">
+        <view class="pick-number-label">柜式空调</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{packageAirConditionCount == minCount ? 'disabled-btn': ''}}" data-electric-type='2' bindtap="decreaseCount">-</view>
+            <view class="pick-input">
+                <input  type="number" value="{{packageAirConditionCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{packageAirConditionCount == maxCount ? 'disabled-btn': ''}}" data-electric-type='2' bindtap="increaseCount">+</view>
+        </view>
+      </view>  
+      <view class="pick-number">
+        <view class="pick-number-label">油烟机</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{kitchenVentilatorCount == minCount ? 'disabled-btn': ''}}" data-electric-type='3' bindtap="decreaseCount">-</view>
+            <view class="pick-input">
+                <input  type="number" value="{{kitchenVentilatorCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{kitchenVentilatorCount == maxCount ? 'disabled-btn': ''}}" data-electric-type='3' bindtap="increaseCount">+</view>
+        </view>
+      </view> 
+      <view class="pick-number">
+        <view class="pick-number-label">洗衣机</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{washerCount == minCount ? 'disabled-btn': ''}}" data-electric-type='4' bindtap="decreaseCount">-</view>
+            <view class="pick-input">
+                <input  type="number" value="{{washerCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{washerCount == maxCount ? 'disabled-btn': ''}}" data-electric-type='4' bindtap="increaseCount">+</view>
+        </view>
+      </view> 
+      <view class="pick-number">
+        <view class="pick-number-label">电脑</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{computerCount == minCount ? 'disabled-btn': ''}}" data-electric-type='5' bindtap="decreaseCount">-</view>
+            <view class="pick-input">
+                <input  type="number" value="{{computerCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{computerCount == maxCount ? 'disabled-btn': ''}}" data-electric-type='5' bindtap="increaseCount">+</view>
+        </view>
+      </view> 
+      <view class="pick-number">
+        <view class="pick-number-label">微波炉</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{microwaveCount == minCount ? 'disabled-btn': ''}}" data-electric-type='6' bindtap="decreaseCount">-</view>
+            <view class="pick-input">
+                <input  type="number" value="{{microwaveCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{microwaveCount == maxCount ? 'disabled-btn': ''}}" data-electric-type='6' bindtap="increaseCount">+</view>
+        </view>
+      </view> 
+      <view class="pick-number">
+        <view class="pick-number-label">单开门冰箱</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{singleRefrigeratorCount == minCount ? 'disabled-btn': ''}}" data-electric-type='7' bindtap="decreaseCount">-</view>
+            <view class="pick-input">
+                <input  type="number" value="{{singleRefrigeratorCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{singleRefrigeratorCount == maxCount ? 'disabled-btn': ''}}" data-electric-type='7' bindtap="increaseCount">+</view>
+        </view>
+      </view> 
+      <view class="pick-number">
+        <view class="pick-number-label">双开门冰箱</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{complexRefrigeratorCount == minCount ? 'disabled-btn': ''}}" data-electric-type='8' bindtap="decreaseCount">-</view>
+            <view class="pick-input">
+                <input  type="number" value="{{complexRefrigeratorCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{complexRefrigeratorCount == maxCount ? 'disabled-btn': ''}}" data-electric-type='8' bindtap="increaseCount">+</view>
+        </view>
+      </view> 
+
+      <view class="popup-submit-btn" bindtap="submitNumber">
+        确定
+      </view>                   
+    </view>
+  </view>
+  <view class='pay-container'>
+    <view class='pay-container-left'>
+      <text class='gray-word'>为您省下￥{{discountMoney}}元</text>
+    </view>
+    <view class='pay-container-medium'>
+      <text class='font-weight-600'>待支付</text>
+      <text class='red'>￥{{totalFee - discountMoney}}</text>
+    </view>
+    <view class='pay-container-button' bindtap="payMoney">
+      <text>现在预约</text>
+    </view>
+  </view>
+</view>

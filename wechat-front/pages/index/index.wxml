@@ -32,8 +32,8 @@
     <view class="card-container">
       <view wx:for="{{cards.cards}}" wx:key="cardsIdx" wx:for-item="card" class="card-item">
         <view class="card-item-inner">
-          <image src="{{card.src}}" mode="widthFix" class="card-img"></image>
-          <view class="card-text">{{card.text}}</view>
+          <image src="{{card.image_url}}" mode="widthFix" class="card-img"></image>
+          <view class="card-text">{{card.description}}</view>
         </view>
       </view>
     </view>

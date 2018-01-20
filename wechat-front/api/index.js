@@ -21,22 +21,20 @@ const wxRequest = (params, url) => {
 }
 
 // 登录
-export const login = params => wxRequest(params, `${APIROOT}/login`)
+export const login = params => wxRequest(params, `${APIROOT}/auth/login`)
 // 注册
-export const register = params => wxRequest(params, `${APIROOT}/register`)
+export const register = params => wxRequest(params, `${APIROOT}/auth/register`)
 // 获取订单类型信息
 export const getOrderTypeInfo = params => wxRequest(params, `${APIROOT}/get_order_tpye_info/${params.query.orderType}`)
 // 添加地址
-export const addAddress = params => wxRequest(params, `${APIROOT}/add_address`)
+export const addAddress = params => wxRequest(params, `${APIROOT}/address/add_address`)
 // 获取地址信息
-export const getAddress = params => wxRequest(params, `${APIROOT}/get_address_list/${params.query.loginCode}`)
+export const getAddress = params => wxRequest(params, `${APIROOT}/address/get_address_list/${params.query.loginCode}`)
 // 查询订单列表
-export const getOrderList = params => wxRequest(params, `${APIROOT}/get_order_list/${params.query.userId}`)
+export const getOrderList = params => wxRequest(params, `${APIROOT}/get_order_list/${params.query.loginCode}`)
 // 支付
 export const pay = params => wxRequest(params, `${APIROOT}/pay_order`)
 // 获取验证码
 export const getCode = params => wxRequest(params, `${APIROOT}/get_phone_code`)
-
-const getCardById = params => wxRequest(params, `${APIROOT}/api/hp/detail/${params.query.id}`)
-const getCardIdList = params => wxRequest(params, `${APIROOT}/api/hp/idlist/0`)
-const getCardByMonth = params => wxRequest(params, `${APIROOT}/api/hp/bymonth/${params.query.month}`)
+// 获取所有卡券
+export const getCardsList = params => wxRequest(params, `${APIROOT}/get_card_list`)

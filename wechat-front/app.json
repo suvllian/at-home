@@ -1,6 +1,9 @@
 {
   "pages":[
     "pages/index/index",
+    "pages/coupons/index",
+    "pages/household/index",
+    "pages/electric/index",
     "pages/kitchen/index",
     "pages/wash-glass/index",
     "pages/login/index",

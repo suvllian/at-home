@@ -1,0 +1,39 @@
+.coupons {
+  display: block;
+  height: 100%;
+  padding: 24rpx;
+  min-height: 100vh;
+}
+.section {
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+}
+.login-input {
+  position: relative;
+  padding: 26rpx 34rpx;
+  font-size: 36rpx;
+  background-color: #fff;
+}
+.order-row-inner {
+  display: block;
+}
+.order-text {
+  line-height: 54rpx;
+}
+/* 获取验证码按钮 */
+.get-code-btn-container {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  right: 0;
+  padding: 20rpx 34rpx;
+  z-index: 10;
+}
+.get-code-btn {
+  padding: 8rpx 15rpx;
+  border-radius: 5rpx;
+  font-size: 28rpx;
+  background-color: #535353;
+  color: #fff;
+}

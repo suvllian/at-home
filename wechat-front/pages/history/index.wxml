@@ -1,20 +1,23 @@
 <import src="../components/radius/bottom-radius.wxml" />
 
 <view class="container history">
-  <view wx:for="{{orderList}}" wx:key="orderIdx" wx:for-item="order" class="section">
-    <view class="order-row">
-      <view class="order-row-inner">
-        <view class="row-inner font-weight-600">{{order.type_description}}</view>
+  <view  wx:if="{{orderList.length}}">
+    <view wx:for="{{orderList}}" wx:key="orderIdx" wx:for-item="order" class="section">
+      <view class="order-row">
+        <view class="order-row-inner">
+          <view class="row-inner font-weight-600">{{order.type_description}}</view>
+        </view>
       </view>
-    </view>
-    <view class="order-row">
-      <view class="order-row-inner">
-        <view class="font-30 order-text">下单时间：{{order.gmt_create}}</view>
-        <view class="font-30 order-text">预约时间：{{order.order_time}}</view>
-        <view class="font-28 order-text">总计 ￥{{order.money_number}}</view>
+      <view class="order-row">
+        <view class="order-row-inner">
+          <view class="font-30 order-text">下单时间：{{order.gmt_create}}</view>
+          <view class="font-30 order-text">预约时间：{{order.order_time}}</view>
+          <view class="font-28 order-text">总计 ￥{{order.money_number}}</view>
+        </view>
+        <template is="bottom" />
       </view>
-      <template is="bottom" />
+      <include src="/pages/components/call-service/index" />
     </view>
-    <include src="/pages/components/call-service/index" />
   </view>
+  <view class='show-btn' wx:else>暂无历史订单</view>
 </view>

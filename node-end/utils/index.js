@@ -1,11 +1,3 @@
-function responseJSON(res, result, method) {
-	if (method === 'get') { 
-		result ? res.jsonp(result) : res.json({code: '-200', msg: '操作失败', success: false})
-	} else if (method === 'post') {
-		result ? res.json({success: true}) : res.json({code: '-200', msg: '操作失败', success: false})
-	}
-}
-
 // 设置返回信息
 function setResponse (res, result, success) {
   var successMap = {
@@ -32,6 +24,16 @@ function parseUrlParams(params) {
   return paramArr.join('&')
 }
 
+function parseObjectParams(params) {
+  var paramArr = []
+  for (var key in params) {
+    paramArr.push(key + '=' + params[key])
+  }
+
+  return paramArr.join('&')
+}
+
+
 function addParamsToUrl(url, params) {
   var paramStr = parseUrlParams(params)
 
@@ -51,8 +53,9 @@ function MathRand() {
 }
 
 module.exports = {
-  responseJSON, 
   addParamsToUrl,
+  parseUrlParams,
+  parseObjectParams,
   successRes,
   failRes,
   MathRand

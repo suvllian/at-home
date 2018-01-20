@@ -4,12 +4,12 @@
 
 <view class="container kitchen">
   <view class="flex-container">
-    <image src="../../assets/images/kitchen_banner.jpg" mode="widthFix" class="banner-img"></image>
+    <image src="../../assets/images/electric_banner.jpg" mode="widthFix" class="banner-img"></image>
   </view>
   <view class="section">
     <view class="order-row">
       <view class="order-row-inner">
-        <view class="row-inner-left">厨房、卫生间</view>
+        <view class="row-inner-left">家居养护</view>
         <view class="row-inner-right">
           <view class="flex-ver-center-container align-right" bindtap="togglePopup">
             <text>{{showText}}</text>
@@ -65,25 +65,46 @@
     <view class="popup-mask" bindtap="togglePopup"></view>
     <view class="popup-contents">
       <view class="pick-number">
-        <view class="pick-number-label">厨房</view>
+        <view class="pick-number-label">沙发</view>
         <view class="pick-number-container">
-            <view class="pick-decrease {{kitchenCount == minCount ? 'disabled-btn': ''}}" bindtap="decreaseKitchen">-</view>
+            <view class="pick-decrease {{sofaCount == minCount ? 'disabled-btn': ''}}" data-electric-type='1' bindtap="decreaseCount">-</view>
             <view class="pick-input">
-              <input type="number" value="{{kitchenCount}}" disabled/>
+              <input type="number" value="{{sofaCount}}" disabled/>
             </view>
-            <view class="pick-increase {{kitchenCount == maxCount ? 'disabled-btn': ''}}" bindtap="increaseKitchen">+</view>
+            <view class="pick-increase {{sofaCount == maxCount ? 'disabled-btn': ''}}" data-electric-type='1' bindtap="increaseCount">+</view>
         </view>
       </view>
       <view class="pick-number">
-        <view class="pick-number-label">卫生间</view>
+        <view class="pick-number-label">地毯</view>
         <view class="pick-number-container">
-            <view class="pick-decrease {{bathroomCount == minCount ? 'disabled-btn': ''}}" bindtap="decreaseBathroom">-</view>
+            <view class="pick-decrease {{carpetCount == minCount ? 'disabled-btn': ''}}" data-electric-type='2' bindtap="decreaseCount">-</view>
             <view class="pick-input">
-                <input  type="number" value="{{bathroomCount}}" disabled/>
+              <input type="number" value="{{carpetCount}}" disabled/>
             </view>
-            <view class="pick-increase {{bathroomCount== maxCount ? 'disabled-btn': ''}}" bindtap="increaseBathroom">+</view>
+            <view class="pick-increase {{carpetCount == maxCount ? 'disabled-btn': ''}}" data-electric-type='2' bindtap="increaseCount">+</view>
         </view>
-      </view>  
+      </view>
+      <view class="pick-number">
+        <view class="pick-number-label">地板</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{floorCount == minCount ? 'disabled-btn': ''}}" data-electric-type='3' bindtap="decreaseCount">-</view>
+            <view class="pick-input">
+              <input type="number" value="{{floorCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{floorCount == maxCount ? 'disabled-btn': ''}}" data-electric-type='3' bindtap="increaseCount">+</view>
+        </view>
+      </view>
+      <view class="pick-number">
+        <view class="pick-number-label">除螨</view>
+        <view class="pick-number-container">
+            <view class="pick-decrease {{cleanCount == minCount ? 'disabled-btn': ''}}" data-electric-type='4' bindtap="decreaseCount">-</view>
+            <view class="pick-input">
+              <input type="number" value="{{cleanCount}}" disabled/>
+            </view>
+            <view class="pick-increase {{cleanCount == maxCount ? 'disabled-btn': ''}}" data-electric-type='4' bindtap="increaseCount">+</view>
+        </view>
+      </view>
+
       <view class="popup-submit-btn" bindtap="submitNumber">
         确定
       </view>                   

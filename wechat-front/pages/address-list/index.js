@@ -43,7 +43,20 @@ Page({
             },
             success: function (res) {
               const { data = {} } = res
-              const { data: addressList = [] }  = data
+              const { data: addressList = [], success = false, msg = '', noRegister = false }  = data
+
+              // 登录失败
+              if (!success) {
+                if (noRegister) {
+                  // 未注册
+                  wx.navigateTo({
+                    url: '/pages/login/index'
+                  })
+                } else {
+                  console.log(msg)
+                  return
+                }
+              }
 
               addressList.forEach(address => {
                 address.isMale = address.is_male == "1" ? true : false
@@ -73,7 +86,7 @@ Page({
     const { handleType, addressList } = this.data
     if (handleType === 'choose') {
       const { addressId } = e.currentTarget.dataset
-      const choosedAddress = addressList.filter(address => address.id === addressId) || []
+      const choosedAddress = addressList.filter(address => address.address_id === addressId) || []
 
       let addressName = choosedAddress[0].area + choosedAddress[0].specificAddress
       if (addressName.length > 8) {

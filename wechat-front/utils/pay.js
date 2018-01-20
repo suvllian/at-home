@@ -1,42 +1,61 @@
-function wxpay(app, money, orderId, redirectUrl) {
-  wx.request({
-    url: 'https://api.it120.cc/' + app.globalData.subDomain + '/pay/wxapp/get-pay-data',
-    method:'POST',
-    header: {
-      'content-type': 'application/x-www-form-urlencoded'
-    },
-    data: {
-      do: 'order',
-      concrete: 'payOrder',
-      userId: 1,
-      money: money
-    },
+import { pay } from '../api/index.js'
+import { APPID, PAYKEY } from '../config.js'
+import { parseObjectParams, getRandomString } from './util.js'
+import md5 from './md5.js'
+
+export const wxPay = (orderId, totalFee, redirectUrl) => {
+  wx.login({
     success: function (res) {
-      if (res.data.code == 0) {
-        // 发起支付
-        wx.requestPayment({
-          timeStamp: res.data.data.timeStamp,
-          nonceStr: res.data.data.nonceStr,
-          package: 'prepay_id=' + res.data.data.prepayId,
-          signType: 'MD5',
-          paySign: res.data.data.sign,
-          fail: function (aaa) {
-            wx.showToast({ title: '支付失败:' + aaa })
+      const { code } = res
+
+      if (code) {
+        pay({
+          method: 'POST',
+          data: {
+            orderId,
+            totalFee,
+            loginCode: code
           },
-          success: function () {
-            wx.showToast({ title: '支付成功' })
-            wx.reLaunch({
-              url: redirectUrl
-            });
+          success: function (res) {
+            const { prepay_id = '', nonce_str = '' } = res.data && res.data.data
+
+            if (!prepay_id) {
+              console.log('下单失败')
+              return 
+            }
+
+            const params = {
+              appId: APPID,
+              nonceStr: getRandomString(28),
+              package: `prepay_id=${prepay_id}`,
+              signType: 'MD5',
+              timeStamp: `${new Date().getTime()}`,
+              key: PAYKEY
+            }
+            // 生成签名
+            const paySign = md5.hexMD5(parseObjectParams(params)).toUpperCase()
+            delete params['key']
+
+            wx.requestPayment({
+              ...params,
+              paySign,
+              success: function (res) {
+                console.log('下单成功', res)
+                wx.navigateTo({
+                  url: redirectUrl
+                })
+              },
+              fail: function (err) {
+                console.log('下单失败', err)
+              }
+            })
+          },
+          fail: function (err) {
+            console.log(err)
           }
         })
-      } else {
-        wx.showToast({ title: '服务器忙' + res.data.code + res.data.msg })
+
       }
     }
   })
-}
-
-module.exports = {
-  wxpay: wxpay
 }

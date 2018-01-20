@@ -1,0 +1,30 @@
+<import src="../components/radius/bottom-radius.wxml" />
+
+<view class="container coupons">
+  <view>
+    <view>
+      <input type='number' placeholder='输入抵用券凭证码' class='login-input' bindinput='codeInput'>
+        <view class='get-code-btn-container'>
+          <view class='get-code-btn' bindtap='getCode'>兑换</view>
+        </view>
+      </input>
+    </view>
+    <view wx:for="{{couponsList}}" wx:key="couponsIdx" wx:for-item="coupons" class="section">
+      <view class="order-row">
+        <view class="order-row-inner">
+          <view class="row-inner font-weight-600">兑用抵换券</view>
+        </view>
+      </view>
+      <view class="order-row">
+        <view class="order-row-inner">
+          <view class="font-30 order-text gray-word">兑换时间：{{coupons.used_time}}</view>
+          <view class="font-30 order-text gray-word font-weight-600">￥{{coupons.coupons_money}}</view>
+          <view class="font-22 order-text gray-word" wx:if="{{coupons.has_used}}">已被 {{coupons.coupons_username}} 领取</view>
+          <view class="font-22 order-text gray-word" wx:else>消费时当消费金额大于抵用券面额即可抵用相应金额。</view>
+        </view>
+        <template is="bottom" />
+      </view>
+      <include src="/pages/components/call-service/index" />
+    </view>
+  </view>
+</view>

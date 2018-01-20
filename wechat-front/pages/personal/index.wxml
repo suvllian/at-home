@@ -20,9 +20,11 @@
       </view>
     </view>
     <view class="order-row">
-      <view class="order-row-inner">
-        <view class="row-inner">优惠券/兑换</view>
-      </view>
+      <navigator url="/pages/coupons/index" hover-class="other-navigator-hover">
+        <view class="order-row-inner">
+          <view class="row-inner">优惠券/兑换</view>
+        </view>
+      </navigator>
     </view>
     <view class="order-row">
       <navigator url="/pages/address-list/index" hover-class="other-navigator-hover">

@@ -3,7 +3,19 @@ import { serviceNumber } from '../../config.js'
 
 Page({
   data: {
-    orderList: []
+    couponsList: [{
+      coupons_description: '兑换抵用券',
+      coupons_money: 100,
+      coupons_username: '亲爱的爸爸',
+      used_time: '2017-11-25 09:36:10',
+      has_used: 1
+    }, {
+      coupons_description: '兑换抵用券',
+      coupons_money: 100,
+      coupons_username: '亲爱的爸爸',
+      used_time: '2017-11-25 09:36:10',
+      has_used: 0
+    }]
   },
   onLoad: function() {
     const $that = this
