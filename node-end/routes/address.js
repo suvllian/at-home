@@ -5,12 +5,12 @@ var Model = require('./../models/model');
 var services = require('./../services/index');
 
 // 获取地址
-router.get('/get_address_list/:login_code', function(req, res, next) {
-  var loginCode = req.params.login_code
+router.get('/get_address_list', function(req, res, next) {
+  var { loginCode, phone } = req.query
 
-  if (!loginCode) {
+  if (!loginCode || !phone) {
     return utils.failRes(res, {
-      msg: '获取loginCode失败'
+      msg: '参数有误'
     })
   }
 
@@ -23,7 +23,7 @@ router.get('/get_address_list/:login_code', function(req, res, next) {
       })
     }
 
-    new Model('query_address').operate([openid]).then(result => {
+    new Model('query_address').operate([openid, phone]).then(result => {
       utils.successRes(res, {
         data: result
       })
@@ -38,11 +38,11 @@ router.get('/get_address_list/:login_code', function(req, res, next) {
 
 // 添加地址
 router.post('/add_address', function(req, res, next) {
-  var { name, isMale, phone, area, specificAddress, loginCode } = req.body 
+  var { name, isMale, phone, area, specificAddress, loginCode, userPhone } = req.body 
 
-  if (!loginCode || !name || !isMale || !phone || !area || !specificAddress) {
+  if (!loginCode || !name || (isMale !== 0 && isMale !== 1) || !phone || !area || !specificAddress || !userPhone) {
     return utils.failRes(res, {
-      msg: '获取loginCode失败'
+      msg: '参数有误'
     })
   }
 
@@ -51,11 +51,11 @@ router.post('/add_address', function(req, res, next) {
 
     if (!openid) {
       return utils.failRes(res, {
-        msg: '添加地址失败'
+        msg: '用户验证失败'
       })
     }
 
-    new Model('query_userid_by_openid').operate([openid]).then(queryUserIdResult => {
+    new Model('query_userid_by_openid').operate([openid, userPhone]).then(queryUserIdResult => {
       if (queryUserIdResult && queryUserIdResult.length) {
         var { id: userId } = queryUserIdResult[0]
 

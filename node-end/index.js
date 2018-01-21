@@ -8,6 +8,7 @@ var http = require('http');
 var index = require('./routes/index.js');
 var auth = require('./routes/auth.js');
 var address = require('./routes/address.js');
+var order = require('./routes/order.js');
 
 var app = express();
 
@@ -21,6 +22,8 @@ app.use('/', index);
 app.use('/auth/', auth);
 // 地址：添加地址，获取地址
 app.use('/address/', address);
+// 订单：下单，获取订单list
+app.use('/order/', order);
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
