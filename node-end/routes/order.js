@@ -20,7 +20,7 @@ router.post('/pay_order', function(req, res, next) {
     })
   }
 
-  totalFee = 0.01
+  // totalFee = 0.01
 
   services.getOpenId(loginCode).then(result => {
     var { openid } = result
@@ -35,7 +35,7 @@ router.post('/pay_order', function(req, res, next) {
       // 小程序id
       appid: config.APPID,
       // 
-      body: '在乎',
+      body: '在乎订单-' + orderId,
       // 商户号
       mch_id: config.PAYUSERID,
       // 随机字符串

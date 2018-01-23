@@ -9,6 +9,7 @@ var index = require('./routes/index.js');
 var auth = require('./routes/auth.js');
 var address = require('./routes/address.js');
 var order = require('./routes/order.js');
+var coupon = require('./routes/coupons.js');
 
 var app = express();
 
@@ -16,6 +17,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')))
 
 app.use('/', index);
 // 权限操作：登录、注册、获取验证码
@@ -24,6 +26,8 @@ app.use('/auth/', auth);
 app.use('/address/', address);
 // 订单：下单，获取订单list
 app.use('/order/', order);
+// 卡包和券操作
+app.use('/coupon/', coupon);
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

@@ -35,6 +35,22 @@ router.get('/get_card_list', function(req, res, next) {
   })
 })
 
+// 获取卡券列表
+router.get('/get_page_information', function(req, res, next) {
+  const { pageType } = req.query
+
+  new Model('query_page_information').operate([pageType]).then(result => {
+    return utils.successRes(res, {
+      data: result
+    })
+  }).catch(error => {
+    console.log(error)
+    return utils.failRes(res, {
+      msg: '获取页面失败'
+    })
+  })
+})
+
 router.post('/order_success', function(req, res, next) {
   console.log(req.body)
   console.log(req.params)
