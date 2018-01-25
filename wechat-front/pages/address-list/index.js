@@ -1,4 +1,6 @@
 import { getAddress } from '../../api/index.js'
+import { showToast } from '../../utils/util.js'
+import { getUserPhone } from '../../utils/storage.js'
 var app = getApp()
 
 Page({
@@ -18,69 +20,73 @@ Page({
       handleType: options.type
     })
   },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-    
-  },
-
   /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
     const $that = this
+    const phone = getUserPhone()
+
+    if (!phone) {
+      // 未注册
+      wx.redirectTo({
+        url: '/pages/login/index'
+      })
+      return
+    }
 
     wx.login({
       success: res => {
         const { code } = res
-        // 发送请求，获取地址
-        if (code) {
-          getAddress({
-            query: {
-              loginCode: code
-            },
-            success: function (res) {
-              const { data = {} } = res
-              const { data: addressList = [], success = false, msg = '', noRegister = false }  = data
 
-              // 登录失败
-              if (!success) {
-                if (noRegister) {
-                  // 未注册
-                  wx.navigateTo({
-                    url: '/pages/login/index'
-                  })
-                } else {
-                  console.log(msg)
-                  return
-                }
-              }
-
-              addressList.forEach(address => {
-                address.isMale = address.is_male == "1" ? true : false
-                address.specificAddress = address.specific_address
-              })
-
-              $that.setData({
-                addressList
-              })
-            },
-            fail: function () {
-
-            }
-          })
+        if (!code) {
+          showToast('获取用户信息失败')
+          return 
         }
+        // loading交互
+        wx.showLoading()
+        getAddress({
+          method: 'GET',
+          data: {
+            phone,
+            loginCode: code
+          },
+          success: function (res) {
+            const { data = {} } = res
+            const { data: addressList = [], success = false, msg = '', noRegister = false, noLogin = false } = data
+            // 隐藏loading
+            wx.hideLoading()
+
+            // 登录失败
+            if (!success) {
+              if (noRegister || noLogin) {
+                // 未注册
+                wx.redirectTo({
+                  url: '/pages/login/index'
+                })
+              } else {
+                showToast(msg)
+                return
+              }
+            }
+
+            addressList.forEach(address => {
+              address.isMale = address.is_male == "1" ? true : false
+              address.specificAddress = address.specific_address
+            })
+
+            $that.setData({
+              addressList
+            })
+          },
+          fail: function () {
+            // 隐藏loading
+            wx.hideLoading()
+            showToast('获取地址失败')
+          }
+        })
       }
     })
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-    
   },
   clickAddress: function(e) {
     const { handleType, addressList } = this.data

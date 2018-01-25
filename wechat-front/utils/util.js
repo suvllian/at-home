@@ -21,7 +21,7 @@ export const parseObjectParams = params => {
 }
 
 // 获取当前日期
-export const getCurrentDate = (connectSymbol) => {
+export const getCurrentDate = (time) => {
   const dateObject = new Date()
   const year = dateObject.getFullYear()
   const month = String(dateObject.getMonth() + 1).padStart(2, '0')
@@ -35,18 +35,33 @@ export const formatNumber = n => {
   return n[1] ? n : '0' + n
 }
 
-export const formatTime = date => {
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1
-  const day = date.getDate()
-  const hour = date.getHours()
-  const minute = date.getMinutes()
-  const second = date.getSeconds()
+export const formatTime = (timeValue, splitChar) => {
+  let dateObject = new Date()
+  if (typeof timeValue === 'object') {
+    dateObject = timeValue
+  } else {
+    let timeStamp = parseInt(timeValue)
+    dateObject = isNaN(timeStamp) ? new Date() : new Date(timeStamp)
+  }
 
-  return [year, month, day].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':')
+  const year = dateObject.getFullYear()
+  const month = dateObject.getMonth() + 1
+  const day = dateObject.getDate()
+  const hour = dateObject.getHours()
+  const minute = dateObject.getMinutes()
+  const second = dateObject.getSeconds()
+  const finalChar = splitChar ? splitChar : '/'
+
+  return [year, month, day].map(formatNumber).join(finalChar) + ' ' + [hour, minute, second].map(formatNumber).join(':')
 }
 
 export const formatMakettime = (dateString) => {
   return (new Date(dateString)).toString().split(' ', 4).slice(1, 4).join(' ')
 }
 
+export const showToast = (title) => {
+  wx.showToast({
+    title,
+    icon: 'none'
+  })
+}

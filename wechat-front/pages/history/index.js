@@ -1,5 +1,7 @@
 import { getOrderList } from '../../api/index.js'
-import { serviceNumber } from '../../config.js'
+import { SERVICENUMBER, STORAGEKEY } from '../../config.js'
+import { formatTime } from '../../utils/util.js'
+var app = getApp()
 
 Page({
   data: {
@@ -7,6 +9,16 @@ Page({
   },
   onLoad: function() {
     const $that = this
+    const userInfo = wx.getStorageSync(STORAGEKEY) || {}
+    const { phone } = userInfo || {}
+
+    if (!phone) {
+      // 未注册
+      wx.redirectTo({
+        url: '/pages/login/index'
+      })
+      return
+    }
 
     // 发送请求，获取地址
     wx.login({
@@ -15,12 +27,18 @@ Page({
 
         if (code) {
           getOrderList({
-            query: {
+            method: 'GET',
+            data: {
+              phone,
               loginCode: code
             },
             success: function (res) {
               const { data = {} } = res
               const{ data: orderList } = data
+
+              orderList.forEach(order => {
+                order.gmt_create = formatTime(new Date(parseInt(order.gmt_create)))
+              })
 
               $that.setData({
                 orderList
@@ -39,7 +57,7 @@ Page({
   },
   callService: function () {
     wx.makePhoneCall({
-      phoneNumber: serviceNumber
+      phoneNumber: SERVICENUMBER
     })
   }
 })

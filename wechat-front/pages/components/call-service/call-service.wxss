@@ -1,0 +1,24 @@
+.order-row {
+  position: relative;
+  padding: 0 26rpx;
+  background-color: #fff;
+}
+.contact-service {
+  display: flex;
+  padding: 25rpx 0;
+  align-items: center;
+  justify-content: center;
+}
+.flex-ver-center-container {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.icon {
+  width: 30rpx;
+  height: 30rpx;
+  margin-right: 6px;
+}
+.font-28 {
+  font-size: 28rpx;
+}

@@ -11,7 +11,8 @@
 }
 .login-input {
   position: relative;
-  padding: 26rpx 34rpx;
+  z-index: 1;
+  padding: 26rpx 118rpx 26rpx 34rpx;
   font-size: 36rpx;
   background-color: #fff;
 }
@@ -31,9 +32,11 @@
   z-index: 10;
 }
 .get-code-btn {
+  min-width: 100rpx;
   padding: 8rpx 15rpx;
   border-radius: 5rpx;
   font-size: 28rpx;
   background-color: #535353;
   color: #fff;
+  text-align: center;
 }

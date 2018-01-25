@@ -1,37 +1,46 @@
-import { getOrderTypeInfo, pay, login }  from '../../api/index.js'
-import { SERVICENUMBER, APPID, PAYKEY, TIMEPICKERVALUE } from '../../config.js'
+import { getOrderTypeInfo }  from '../../api/index.js'
+import { SERVICENUMBER, TIMEPICKERVALUE } from '../../config.js'
 import { getCurrentDate } from '../../utils/util.js'
 import { wxPay } from '../../utils/pay.js'
+import { getEligibleCoupon, getMemberScale } from '../../utils/storage.js'
 var app = getApp()
 
 Page({
   data: {
     // 选项信息
     typeNameArray: [],
-    // 选项id
-    typeIdArray: [],
+    // 选项全部信息
+    typeInformation: [],
+    // 价格
     priceList: [0],
+    // 选中项
     selectedIndex: 0,
-    coupons: 0,
-    // 折后价
+    // 全部优惠价（会员折扣 + 券）
     discountMoney: 0,
-    // 会员折扣率
-    memberScale: 0,
+    // 折后价
+    totalFee: 0,
     multiArray: TIMEPICKERVALUE,
     multiIndex: [0, 8, 9],
     date: getCurrentDate().join('-'),
-    addressName: ''
+    addressName: '',
+    memberScale: 0,
+    coupons: 0,
   },
-  onLoad () {
-    let { coupons, selectedIndex } = this.data
-    let typeNameArray = [], typeIdArray = [], priceList = []
+  onShow () {
+    const { selectedIndex } = this.data
     const $that = this
-    const { userInfo = {} } = app.globalData
-    const memberScale = userInfo && userInfo.memberTypeInfo && userInfo.memberTypeInfo.memberScale || 0
-
+    let typeNameArray = [], priceList = []
+    const { choosedAddress = {} } = app.globalData
+    const memberScale = getMemberScale()
     memberScale && this.setData({
       memberScale
     })
+
+    if (choosedAddress.addressName) {
+      this.setData({
+        addressName: choosedAddress.addressName
+      })
+    }
 
     getOrderTypeInfo({
       method: 'GET',
@@ -42,35 +51,44 @@ Page({
         const { data } = res
         const { data: list = [], success } = data
         if (!success) { return }
-        let discountMoney = 0
 
         list.map(item => {
           typeNameArray.push(item.type_name)
-          typeIdArray.push(item.id)
           priceList.push(item.type_price)
         })
 
-        discountMoney = (priceList[selectedIndex] * memberScale + coupons).toFixed(2)
+        const totalFee = priceList[selectedIndex] * (1 - memberScale)
+        const coupons = getEligibleCoupon(totalFee)
+        const discountMoney = (priceList[selectedIndex] * memberScale + coupons).toFixed(2)
 
         $that.setData({
-          typeIdArray,
+          totalFee, coupons,
+          typeInformation: list,
           typeNameArray, priceList: priceList.length ? priceList : [0],
           discountMoney: !isNaN(discountMoney) ? discountMoney : 0
         })
       },
       fail: err => {
-        console.log(err)
+        this.setData({
+          priceList: [0]
+        })
       }
     })
   },
-  onShow: function () {
-    const { choosedAddress = { } } = app.globalData
+  // 修改房屋面积
+  bindPickerChange: function (e) {
+    const selectedIndex = e.detail.value
+    const { priceList } = this.data
+    const memberScale = getMemberScale()
+    const totalFee = priceList[selectedIndex] * (1 - memberScale)
+    const coupons = getEligibleCoupon(totalFee)
+    const discountMoney = (priceList[selectedIndex] * memberScale + coupons).toFixed(2)
 
-    if (choosedAddress.addressName) {
-      this.setData({
-        addressName: choosedAddress.addressName
-      })
-    }
+    this.setData({
+      coupons, totalFee,
+      selectedIndex,
+      discountMoney
+    })
   },
   // 修改预约时间
   bindMultiPickerChange: function (e) {
@@ -78,36 +96,22 @@ Page({
       multiIndex: e.detail.value
     })
   },
-  // 修改房屋面积
-  bindPickerChange: function (e) {
-    const selectedIndex = e.detail.value
-    const { priceList, coupons } = this.data
-    const { userInfo = {} } = app.globalData
-    const memberScale = userInfo.memberTypeInfo && userInfo.memberTypeInfo.memberScale || 0
-    const discountMoney = (priceList[selectedIndex] * memberScale + coupons).toFixed(2)
-
-    this.setData({
-      selectedIndex,
-      discountMoney
-    })
-  },
+  // 修改日期
   bindDateChange: function (e) {
     this.setData({
       date: e.detail.value
     })
   },
+  // 点击支付按钮
   payMoney: function () {
     // 获取订单信息
-    const { priceList, selectedIndex, typeIdArray, date, multiArray, multiIndex, discountMoney } = this.data
-
+    const { priceList, selectedIndex, typeInformation, date, multiArray, multiIndex, discountMoney } = this.data
     // 总价
     const totalFee = priceList[selectedIndex] - discountMoney 
     // 订单类型信息id
-    const orderTypeId = typeIdArray[selectedIndex]
+    const { id: orderTypeId, parent_type: orderParentType } = typeInformation[selectedIndex]
     // 订单创建时间
     const createTime = new Date().getTime()
-    // 地址信息
-    const { choosedAddress } = app.globalData
     // 预约时间
     const orderTime = `${date} ${multiArray[0][multiIndex[0]]}${multiArray[1][multiIndex[1]]}-${multiArray[2][multiIndex[2]]}点`
 
@@ -117,18 +121,15 @@ Page({
       console.log('选择正确的时间')
     }
 
-    // 未选择服务地址
-    if (!choosedAddress) {
-      wx.navigateTo({
-        url: '/pages/address-list/index?type=choose'
-      })
-      return 
-    }
+    // 订单号
+    const orderId = `1${orderParentType}${orderTypeId}${getCurrentDate().join('')}${createTime}`
 
-    const orderType = '1-1'
-    const orderId = `${orderType}-${getCurrentDate().join('')}${createTime}`
-
-    wxPay(orderId, 0.01, '/pages/index/index')
+    wxPay(orderId, totalFee, '/pages/index/index', {
+      orderTypeId,
+      orderParentType,
+      orderTime,
+      createTime
+    })
   },
   callService: function () {
     wx.makePhoneCall({

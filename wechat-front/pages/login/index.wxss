@@ -21,7 +21,7 @@
   border-bottom: 1px solid #f3f4f6;
 }
 .login-btn-container {
-  padding: 36rpx 48rpx;
+  padding: 34rpx 48rpx;
 }
 .login-btn {
   padding: 16rpx 0;
@@ -51,9 +51,11 @@
   z-index: 10;
 }
 .get-code-btn {
+  min-width: 100rpx;
   padding: 10rpx;
   border-radius: 5rpx;
   font-size: 28rpx;
+  text-align: center;
   background-color: #535353;
   color: #fff;
 }

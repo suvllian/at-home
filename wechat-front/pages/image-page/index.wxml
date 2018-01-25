@@ -1,0 +1,5 @@
+<view class="container image-page">
+  <view class="flex-container"  wx:for="{{imageList}}" wx:for-item="image" wx:key="index">
+    <image src="{{image}}" mode="widthFix" class="banner-img"></image>
+  </view>
+</view>

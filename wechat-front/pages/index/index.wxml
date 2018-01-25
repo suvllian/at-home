@@ -31,7 +31,7 @@
     <view class="card-title">{{cards.title}}</view>
     <view class="card-container">
       <view wx:for="{{cards.cards}}" wx:key="cardsIdx" wx:for-item="card" class="card-item">
-        <view class="card-item-inner">
+        <view class="card-item-inner" data-coupon-id='{{card.id}}' bindtap='buyCoupons'>
           <image src="{{card.image_url}}" mode="widthFix" class="card-img"></image>
           <view class="card-text">{{card.description}}</view>
         </view>

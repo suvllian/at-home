@@ -19,19 +19,7 @@
       </view>
     </view>
     <include src="/pages/components/time/index" />
-    <view class="order-row">
-      <view class="order-row-inner">
-        <view class="row-inner">抵金券</view>
-        <view class="row-inner">
-          <view class="flex-ver-center-container align-right">
-            <text class="red font-weight-600" wx:if="{{coupons}}">-{{coupons}}</text>
-            <text class="red font-weight-600" wx:else>无抵金券</text>
-            <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
-          </view>
-        </view>
-      </view>
-      <template is="bottom" />
-    </view>
+    <include src="/pages/components/coupon/index" />
     <view class="order-row">
       <view class="order-row-inner">
         <view class="row-inner">
@@ -67,21 +55,21 @@
       <view class="pick-number">
         <view class="pick-number-label">厨房</view>
         <view class="pick-number-container">
-            <view class="pick-decrease {{kitchenCount == minCount ? 'disabled-btn': ''}}" bindtap="decreaseKitchen">-</view>
+            <view class="pick-decrease {{kitchenCount == minCount ? 'disabled-btn': ''}}" data-electric-type='1' bindtap="decreaseCount">-</view>
             <view class="pick-input">
               <input type="number" value="{{kitchenCount}}" disabled/>
             </view>
-            <view class="pick-increase {{kitchenCount == maxCount ? 'disabled-btn': ''}}" bindtap="increaseKitchen">+</view>
+            <view class="pick-increase {{kitchenCount == maxCount ? 'disabled-btn': ''}}" data-electric-type='1' bindtap="increaseCount">+</view>
         </view>
       </view>
       <view class="pick-number">
         <view class="pick-number-label">卫生间</view>
         <view class="pick-number-container">
-            <view class="pick-decrease {{bathroomCount == minCount ? 'disabled-btn': ''}}" bindtap="decreaseBathroom">-</view>
+            <view class="pick-decrease {{bathroomCount == minCount ? 'disabled-btn': ''}}" data-electric-type='2' bindtap="decreaseCount">-</view>
             <view class="pick-input">
                 <input  type="number" value="{{bathroomCount}}" disabled/>
             </view>
-            <view class="pick-increase {{bathroomCount== maxCount ? 'disabled-btn': ''}}" bindtap="increaseBathroom">+</view>
+            <view class="pick-increase {{bathroomCount== maxCount ? 'disabled-btn': ''}}" data-electric-type='2' bindtap="increaseCount">+</view>
         </view>
       </view>  
       <view class="popup-submit-btn" bindtap="submitNumber">

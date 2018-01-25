@@ -1,70 +1,17 @@
 import { register, getCode } from '../../api/index.js'
+import { STORAGEKEY } from '../../config.js'
+import { showToast } from '../../utils/util.js'
 const app = getApp()
 
 Page({
-
   /**
    * 页面的初始数据
    */
   data: {
     phoneNumber: '',
-    verifyCode: ''
-  },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-    
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-    
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-    
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-    
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-    
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-    
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-    
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-    
+    verifyCode: '',
+    text: '获取验证码',
+    buttonInvalid: false
   },
   /**
    * 输入手机号
@@ -78,31 +25,50 @@ Page({
    * 获取验证码
    */
   getCode: function () {
-    const { phoneNumber } = this.data
+    const { phoneNumber, buttonInvalid = false } = this.data
+    let timeCount = 60
 
     if (phoneNumber) {
-      wx.login({
-        success: res => {
-          const { code } = res
-
-          getCode({
-            method: 'POST',
-            data: {
-              phoneNumber,
-              loginCode: code
-            },
-            success: res => {
-              console.log(res)
-            },
-            fail: err => {
-              console.log(err)
-            }
+      if (buttonInvalid) {
+        showToast(`请${timeCount}秒后再试`)
+      } else {
+        const timeHandle = setInterval(() => {
+          timeCount--
+          this.setData({
+            text: `${timeCount}S`,
+            buttonInvalid: true
           })
-        }
-      })
-    }
+        }, 1000)
+        setTimeout(() => {
+          clearInterval(timeHandle)
+          this.setData({
+            text: '获取验证码',
+            buttonInvalid: false
+          })
+        }, 60000)
 
-    
+        wx.login({
+          success: res => {
+            const { code } = res
+
+            getCode({
+              method: 'POST',
+              data: {
+                phoneNumber,
+                loginCode: code
+              },
+              success: res => {
+                console.log('获取验证码成功')
+              },
+              fail: err => {
+                showToast('获取验证码失败')
+                console.log('获取验证码失败')
+              }
+            })
+          }
+        })
+      }
+    }
   },
   /**
    * 输入验证码
@@ -117,36 +83,51 @@ Page({
    */
   register: function() {
     const { phoneNumber, verifyCode } = this.data
-    const { userInfo = {} } = app.globalData
 
-    if (phoneNumber && verifyCode) {
-      wx.login({
-        success: function(res) {
-          const { code } = res
+    wx.getStorage({
+      key: STORAGEKEY,
+      success: res => {
+        const { data: userInfo } = res || {}
 
-          if (code) {
-            register({
-              method: 'POST',
-              data: {
-                phoneNumber,
-                verifyCode,
-                nickName: userInfo.nickName,
-                loginCode: code
-              },
-              success: res => {
-                const { success = false, msg = '', noRegister = false } = res.data
-                const { userInfo } = app.globalData
+        if (phoneNumber && verifyCode) {
+          wx.login({
+            success: function (res) {
+              const { code } = res
 
-                if (success) {
-                  wx.navigateBack({
-                    delta: 1
-                  })
-                }
+              if (code) {
+                register({
+                  method: 'POST',
+                  data: {
+                    phoneNumber,
+                    verifyCode,
+                    nickName: userInfo.nickName,
+                    loginCode: code
+                  },
+                  success: res => {
+                    const { success = false, msg = '', data } = res.data
+
+                    if (!success) {
+                      showToast(msg)
+                      return 
+                    }
+
+                    wx.setStorage({
+                      key: STORAGEKEY,
+                      data: {
+                        ...userInfo,
+                        ...data
+                      }
+                    })
+                    wx.navigateBack({
+                      delta: 1
+                    })
+                  }
+                })
               }
-            })
-          }
+            }
+          })
         }
-      })
-    }
+      }
+    })
   }
 })

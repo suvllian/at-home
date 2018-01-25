@@ -6,9 +6,9 @@
       </view>
       <view class="person-name">
         <view class="flex-ver-center-container nickname">{{userInfo.nickName}}</view>
-        <view class="flex-ver-center-container">
+        <view class="flex-ver-center-container" wx:if="{{userInfo.memberDescription}}">
           <image src="./../../assets/images/vip_icon.png" class="icon"></image>
-          <text class="member-type">银卡会员</text>
+          <text class="member-type">{{userInfo.memberDescription}}</text>
         </view>
       </view>
     </view>
@@ -34,17 +34,17 @@
       </navigator>
     </view>
     <view class="order-row">
-      <view class="contact-service">
+      <view class="contact-service" bindtap='callService'>
         <view class="flex-ver-center-container">
           <image src="./../../assets/images/phone_icon.png" class="icon"></image>
-          <text class="font-28">客服电话：400-345-56</text>
+          <text class="font-28">客服电话：029-81111852</text>
           <text class="font-22">(服务时间:9:00—23:00)</text>
         </view>
       </view>
     </view>
   </view>
   <view class="section">
-    <view class="login-out">
+    <view class="login-out" bindtap='loginOut'>
       <text>退出账号</text>
     </view>
   </view>

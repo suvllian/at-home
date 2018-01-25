@@ -1,0 +1,17 @@
+<import src="../radius/bottom-radius.wxml" />
+
+<view class="order-row">
+  <navigator url="{{ '/pages/coupons/index?type=choose&totalFee=' + totalFee }}" hover-class="other-navigator-hover">
+    <view class="order-row-inner">
+      <view class="row-inner">抵金券</view>
+      <view class="row-inner">
+        <view class="flex-ver-center-container align-right">
+          <text class="red font-weight-600" wx:if="{{coupons}}">-{{coupons}}</text>
+          <text class="red font-weight-600" wx:else>无抵金券</text>
+          <image src="./../../assets/images/arrow_icon.png" class="arrow-icon"></image>
+        </view>
+      </view>
+    </view>
+    <template is="bottom" />
+  </navigator>
+</view>

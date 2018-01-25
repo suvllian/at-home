@@ -7,7 +7,8 @@
     <view>
       <input type='number' placeholder='请输入验证码' class='login-input' bindinput='codeInput'>
         <view class='get-code-btn-container'>
-          <view class='get-code-btn' bindtap='getCode'>获取验证码</view>
+          <view class='get-code-btn' bindtap='getCode' wx:if="{{!buttonInvalid}}">{{text}}</view>
+          <view class='get-code-btn' bindtap='getCode' wx:else>{{text}}</view>
         </view>
       </input>
     </view>

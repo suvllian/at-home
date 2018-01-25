@@ -1,6 +1,8 @@
 {
   "pages":[
     "pages/index/index",
+    "pages/whole-house/index",
+    "pages/image-page/index",
     "pages/coupons/index",
     "pages/household/index",
     "pages/electric/index",
@@ -8,7 +10,7 @@
     "pages/wash-glass/index",
     "pages/login/index",
     "pages/hour/index",
-    "pages/whole-house/index",
+    
     "pages/address-list/index",
     "pages/add-address/index",
     "pages/personal/index",

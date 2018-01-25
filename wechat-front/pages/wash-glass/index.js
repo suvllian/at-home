@@ -1,11 +1,16 @@
-import { getOrderTypeInfo, login } from '../../api/index.js'
-import { serviceNumber } from '../../config.js'
+import { getOrderTypeInfo } from '../../api/index.js'
+import { SERVICENUMBER, TIMEPICKERVALUE, STORAGEKEY } from '../../config.js'
+import { getCurrentDate } from '../../utils/util.js'
+import { wxPay } from '../../utils/pay.js'
+import { getEligibleCoupon, getMemberScale } from '../../utils/storage.js'
 var app = getApp()
 
 Page({
   data: {
     // 选择类型
     typeNameArray: [],
+    // 选择类型全部信息
+    typeInformation: [],
     // 价格表
     priceList: [0],
     // 选中项
@@ -14,24 +19,30 @@ Page({
     discountMoney: 0,
     // 会员折扣率
     memberScale: 0,
+    // 折后价
+    totalFee: 0,
     // 抵金券
     coupons: 0,
-    multiArray: [['上午', '下午'], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]],
+    multiArray: TIMEPICKERVALUE,
     multiIndex: [0, 8, 9],
-    date: (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate(),
+    date: getCurrentDate().join('-'),
     addressName: ''
   },
-  onLoad: function () {
-    let typeNameArray = [], priceList = []
-    const { selectedIndex, coupons } = this.data
+  onShow: function () {
+    const { selectedIndex } = this.data
     const $that = this
-    const { userInfo = {} } = app.globalData
-    // 设置折扣比率
-    const memberScale = userInfo && userInfo.memberTypeInfo && userInfo.memberTypeInfo.memberScale || 0
-
+    let typeNameArray = [], priceList = []
+    const { choosedAddress = {} } = app.globalData
+    const memberScale = getMemberScale()
     memberScale && this.setData({
       memberScale
     })
+
+    if (choosedAddress.addressName) {
+      this.setData({
+        addressName: choosedAddress.addressName
+      })
+    }
 
     getOrderTypeInfo({
       query: {
@@ -40,16 +51,19 @@ Page({
       success: res => {
         const { data } = res
         const { data: list = [] } = data
-        let discountMoney = 0
 
         list.map(item => {
           typeNameArray.push(item.type_name)
           priceList.push(item.type_price)
         })
 
-        discountMoney = (priceList[selectedIndex] * memberScale + coupons).toFixed(2)
+        const totalFee = priceList[selectedIndex] * (1 - memberScale)
+        const coupons = getEligibleCoupon(totalFee)
+        const discountMoney = (priceList[selectedIndex] * memberScale + coupons).toFixed(2)
 
         $that.setData({
+          coupons, totalFee,
+          typeInformation: list,
           typeNameArray, priceList: priceList.length ? priceList : [0],
           discountMoney: !isNaN(discountMoney) ? discountMoney : 0.00
         })
@@ -61,18 +75,18 @@ Page({
       }
     })
   },
-  onShow: function () {
-    const { choosedAddress = {} } = app.globalData
-
-    if (choosedAddress.addressName) {
-      this.setData({
-        addressName: choosedAddress.addressName
-      })
-    }
-  },
   bindPickerChange: function (e) {
+    const selectedIndex = e.detail.value
+    const { priceList } = this.data
+    const memberScale = getMemberScale()
+    const totalFee = priceList[selectedIndex] * (1 - memberScale)
+    const coupons = getEligibleCoupon(totalFee)
+    const discountMoney = (priceList[selectedIndex] * memberScale + coupons).toFixed(2)
+
     this.setData({
-      selectedIndex: e.detail.value
+      coupons, totalFee,
+      selectedIndex,
+      discountMoney
     })
   },
   // 修改预约时间
@@ -86,48 +100,39 @@ Page({
       date: e.detail.value
     })
   },
+  // 联系客服
   callService: function () {
     wx.makePhoneCall({
-      phoneNumber: serviceNumber
+      phoneNumber: SERVICENUMBER
     })
   },
   // 支付
   payMoney: function () {
-    wx.login({
-      success: function (res) {
-        const { code } = res
+    // 获取订单信息
+    const { priceList, selectedIndex, typeInformation, date, multiArray, multiIndex, discountMoney } = this.data
+    // 总价
+    const totalFee = priceList[selectedIndex] - discountMoney
+    // 订单类型信息id
+    const { id: orderTypeId, parent_type: orderParentType } = typeInformation[selectedIndex]
+    // 订单创建时间
+    const createTime = new Date().getTime()
+    // 预约时间
+    const orderTime = `${date} ${multiArray[0][multiIndex[0]]}${multiArray[1][multiIndex[1]]}-${multiArray[2][multiIndex[2]]}点`
 
-        if (code) {
-          login({
-            method: 'POST',
-            data: {
-              loginCode: code
-            },
-            success: res => {
-              const { success = false, msg = '', noRegister = false } = res.data
-              const { userInfo } = app.globalData
+    // 预约时间校验
+    const formatTime = `${date} ${multiArray[1][multiIndex[1]]}:00:00`
+    if (new Date(formatTime).getTime() < createTime) {
+      console.log('选择正确的时间')
+    }
 
-              // 登录失败
-              if (!success) {
-                if (noRegister) {
-                  // 未注册
-                  wx.navigateTo({
-                    url: '/pages/login/index'
-                  })
-                } else {
-                  console.log(msg)
-                  return
-                }
-              } else {
-                wx.showToast({
-                  title: '成功...'
-                })
-              }
+    // 订单号
+    const orderId = `1${orderParentType}${orderTypeId}${getCurrentDate().join('')}${createTime}`
 
-            }
-          })
-        }
-      }
+    wxPay(orderId, totalFee, '/pages/index/index', {
+      orderTypeId,
+      orderParentType,
+      orderTime,
+      createTime
     })
   }
 })

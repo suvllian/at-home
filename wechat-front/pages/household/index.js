@@ -1,5 +1,9 @@
 import { getOrderTypeInfo, login } from '../../api/index.js'
-import { serviceNumber } from '../../config.js'
+import { SERVICENUMBER, TIMEPICKERVALUE, MAXCOUNT, MINCOUNT, STORAGEKEY } from '../../config.js'
+import { getCurrentDate, showToast } from '../../utils/util.js'
+import { getEligibleCoupon, getMemberScale } from '../../utils/storage.js'
+import { wxPay } from '../../utils/pay.js'
+
 const pickArray = ['一', '两', '三', '四', '五', '六', '七', '八', '九', '十']
 const typeObject = {
   '1': 'sofaCount',
@@ -17,6 +21,7 @@ const app = getApp()
 
 Page({
   data: {
+    // 浮层是否隐藏
     hideSelectPopup: true,
     // 家居数量
     sofaCount: 1,
@@ -28,38 +33,42 @@ Page({
     carpetPrice: 0,
     floorPrice: 0,
     cleanPrice: 0,
-
+    // 总价格
     totalFee: 0,
-    minCount: 0,
-    maxCount: 10,
+    // 数量限制
+    minCount: MINCOUNT,
+    maxCount: MAXCOUNT,
+    // 券
     coupons: 0,
+    // 会员折扣
     memberScale: 0,
+    // 显示文字
     showText: '',
-    multiArray: [['上午', '下午'], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]],
+    // 预约时间及日期
+    multiArray: TIMEPICKERVALUE,
     multiIndex: [0, 8, 9],
-    date: (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate(),
-    addressName: ''
+    date: getCurrentDate().join('-'),
+    // 选中地址
+    addressName: '',
+    //
+    typeId: 0
   },
   onShow: function () {
+    this.setNumber()
+
+    const { sofaCount } = this.data
+    const $that = this
     const { choosedAddress = {} } = app.globalData
+    const memberScale = getMemberScale()
+    memberScale && this.setData({
+      memberScale
+    })
 
     if (choosedAddress.addressName) {
       this.setData({
         addressName: choosedAddress.addressName
       })
     }
-  },
-  onLoad: function () {
-    this.setNumber()
-
-    const { coupons, sofaCount } = this.data
-    const $that = this
-    const { userInfo = {} } = app.globalData
-    const memberScale = userInfo && userInfo.memberTypeInfo && userInfo.memberTypeInfo.memberScale || 0
-
-    memberScale && this.setData({
-      memberScale
-    })
 
     getOrderTypeInfo({
       query: {
@@ -68,24 +77,22 @@ Page({
       success: res => {
         const { data } = res
         const { data: list = [] } = data
-        let discountMoney = 0, totalFee = 0
-
         let newPriceObject = {}
+        let typeId = list[0].id
 
         list.forEach(item => {
           newPriceObject[priceObject[item.type_name]] = item.type_price
         })
 
-        totalFee = sofaCount * newPriceObject['sofaPrice']
-        discountMoney = (totalFee * memberScale + coupons).toFixed(2)
+        const totalFee = sofaCount * newPriceObject['sofaPrice']
+        const coupons = getEligibleCoupon(totalFee)
+        const discountMoney = (totalFee * memberScale + coupons).toFixed(2)
 
         $that.setData({
-          ...newPriceObject, totalFee,
+          ...newPriceObject, 
+          totalFee, typeId, coupons,
           discountMoney: !isNaN(discountMoney) ? discountMoney : 0
         })
-      },
-      fail: err => {
-
       }
     })
   },
@@ -136,13 +143,14 @@ Page({
     }
   },
   setNumber: function () {
-    const { coupons, sofaCount, carpetCount, floorCount, cleanCount, memberScale,
+    const { sofaCount, carpetCount, floorCount, cleanCount, memberScale,
       sofaPrice, carpetPrice, floorPrice, cleanPrice }  = this.data
 
     const totalFee = sofaCount * sofaPrice +
       carpetCount * carpetPrice +
       floorCount * floorPrice +
       cleanCount * cleanPrice
+    const coupons = getEligibleCoupon(totalFee)
     const discountMoney = (totalFee * memberScale + coupons).toFixed(2)
     let showText = []
 
@@ -162,7 +170,7 @@ Page({
     let showTextString = showText.join('、')
 
     this.setData({
-      totalFee, discountMoney,
+      totalFee, discountMoney, coupons,
       showText: showTextString.length > 8 ? showTextString.substring(0, 9) + '...' : showTextString
     })
   },
@@ -177,40 +185,37 @@ Page({
   },
   // 支付
   payMoney: function () {
-    wx.login({
-      success: function (res) {
-        const { code } = res
+    // 获取订单信息
+    let { date, multiArray, multiIndex, totalFee, coupons, memberScale, typeId, sofaCount, carpetCount, floorCount, cleanCount } = this.data
+    totalFee = totalFee * (1 - memberScale) - coupons
 
-        if (code) {
-          login({
-            method: 'POST',
-            data: {
-              loginCode: code
-            },
-            success: res => {
-              const { success = false, msg = '', noRegister = false } = res.data
-              const { userInfo } = app.globalData
+    if (!sofaCount && !carpetCount && !floorCount && !cleanCount) {
+      showToast('至少选择一项家居！')
+      return
+    }
 
-              // 登录失败
-              if (!success) {
-                if (noRegister) {
-                  // 未注册
-                  wx.navigateTo({
-                    url: '/pages/login/index'
-                  })
-                } else {
-                  console.log(msg)
-                  return
-                }
-              } else {
-                wx.showToast({
-                  title: '成功...'
-                })
-              }
-            }
-          })
-        }
-      }
+    const orderParentType = 6, orderTypeId = typeId
+    // 订单创建时间
+    const createTime = new Date().getTime()
+    
+    // 预约时间
+    const orderTime = `${date} ${multiArray[0][multiIndex[0]]}${multiArray[1][multiIndex[1]]}-${multiArray[2][multiIndex[2]]}点`
+
+    // 预约时间校验
+    const formatTime = `${date} ${multiArray[1][multiIndex[1]]}:00:00`
+    if (new Date(formatTime).getTime() < createTime) {
+      console.log('选择正确的时间')
+    }
+
+    // 订单号
+    const orderId = `1${orderParentType}${orderTypeId}${getCurrentDate().join('')}${createTime}`
+
+    wxPay(orderId, totalFee, '/pages/index/index', {
+      orderTypeId,
+      orderParentType,
+      orderTime,
+      createTime,
+      specificCount: [sofaCount, carpetCount, floorCount, cleanCount]
     })
   }
  })

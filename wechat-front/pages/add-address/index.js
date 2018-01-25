@@ -1,4 +1,7 @@
-import { addAddress } from '../../api/index.js'
+import { addAddress, STORAGEKEY } from '../../api/index.js'
+import { showToast } from '../../utils/util.js'
+import { getUserPhone } from '../../utils/storage.js'
+const app = getApp()
 
 Page({
   /**
@@ -48,10 +51,11 @@ Page({
   submit: function() {
     const { addressInformation, isMale, areaList, selectedIndex } = this.data
     const { name, phone, specificAddress } = addressInformation
+    const userPhone = getUserPhone()
 
     // 校验
     if (!name || !phone || !specificAddress || !selectedIndex) {
-      console.log('请将信息填写完整')
+      showToast('请将信息填写完整')
       return  
     }
 
@@ -65,25 +69,36 @@ Page({
       success: res => {
         const { code } = res
 
+        if (!code) {
+          showToast('获取用户信息失败')
+          return
+        }
+
+        // loading交互
+        wx.showLoading()
         addAddress({
           method: 'POST',
           data: {
             ...address,
+            userPhone,
             loginCode: code
           },
           success: res => {
-            const { success } = res.data
+            const { success, msg = '' } = res.data
+            // 隐藏loading
+            wx.hideLoading()
 
             if (success) {
               wx.navigateBack({
                 delta: 1
               })
             } else {
-
+              showToast(msg)
             }
           },
-          fail: res => {
-            console.log('request fail', res)
+          fail: err => {
+            wx.hideLoading()
+            showToast('添加地址失败')
           }
         })
       }

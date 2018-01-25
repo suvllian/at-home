@@ -1,5 +1,9 @@
 import { getOrderTypeInfo, login } from '../../api/index.js'
-import { serviceNumber } from '../../config.js'
+import { SERVICENUMBER, TIMEPICKERVALUE, MAXCOUNT, MINCOUNT } from '../../config.js'
+import { getEligibleCoupon, getMemberScale } from '../../utils/storage.js'
+import { getCurrentDate, showToast } from '../../utils/util.js'
+import { wxPay } from '../../utils/pay.js'
+
 const pickArray = ['一', '两', '三', '四', '五', '六', '七', '八', '九', '十']
 const typeObject = {
   '1': 'hangAirConditionCount',
@@ -21,12 +25,12 @@ const priceObject = {
   '单开门冰箱': 'singleRefrigeratorPrice',
   '双开门冰箱': 'complexRefrigeratorPrice'
 }
-
 const app = getApp()
 
 Page({
   data: {
     hideSelectPopup: true,
+
     // 电器数量
     hangAirConditionCount: 1,
     packageAirConditionCount: 0,
@@ -36,6 +40,7 @@ Page({
     microwaveCount: 0,
     singleRefrigeratorCount: 0,
     complexRefrigeratorCount: 0,
+
     // 电器价格
     hangAirConditionPrice: 0,
     packageAirConditionPrice: 0,
@@ -46,37 +51,41 @@ Page({
     singleRefrigeratorPrice: 0,
     complexRefrigeratorPrice: 0,
 
+    // 总价
     totalFee: 0,
-    minCount: 0,
-    maxCount: 10,
-    coupons: 0,
-    memberScale: 0,
+    // 显示文字
     showText: '',
-    multiArray: [['上午', '下午'], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]],
+    // 数量限制
+    minCount: MINCOUNT,
+    maxCount: MAXCOUNT,
+    // 时间日期选择
+    multiArray: TIMEPICKERVALUE,
     multiIndex: [0, 8, 9],
-    date: (new Date()).getFullYear() + '-' + ((new Date()).getMonth() + 1) + '-' + (new Date()).getDate(),
-    addressName: ''
+    date: getCurrentDate().join('-'),
+    // 地址信息
+    addressName: '',
+    // 会员折扣
+    memberScale: 0,
+    coupons: 0,
+    //
+    typeId: 0,
   },
   onShow: function () {
+    this.setNumber()
+
+    const { coupons, hangAirConditionCount } = this.data
+    const $that = this
     const { choosedAddress = {} } = app.globalData
+    const memberScale = getMemberScale()
+    memberScale && this.setData({
+      memberScale
+    })
 
     if (choosedAddress.addressName) {
       this.setData({
         addressName: choosedAddress.addressName
       })
     }
-  },
-  onLoad: function () {
-    this.setNumber()
-
-    const { coupons, hangAirConditionCount } = this.data
-    const $that = this
-    const { userInfo = {} } = app.globalData
-    const memberScale = userInfo && userInfo.memberTypeInfo && userInfo.memberTypeInfo.memberScale || 0
-
-    memberScale && this.setData({
-      memberScale
-    })
 
     getOrderTypeInfo({
       query: {
@@ -85,19 +94,20 @@ Page({
       success: res => {
         const { data } = res
         const { data: list = [] } = data
-        let discountMoney = 0, totalFee = 0
         let newPriceObject = {}
+        let typeId = list[0].id
 
         list.forEach(item => {
           newPriceObject[priceObject[item.type_name]] = item.type_price
         })
 
-        totalFee = hangAirConditionCount * newPriceObject['hangAirConditionPrice']
-        discountMoney = (totalFee * memberScale + coupons).toFixed(2)
+        const totalFee = hangAirConditionCount * newPriceObject['hangAirConditionPrice']
+        const coupons = getEligibleCoupon(totalFee)
+        const discountMoney = (totalFee * memberScale + coupons).toFixed(2)
 
         $that.setData({
           ...newPriceObject,
-          totalFee,
+          totalFee, typeId, coupons,
           discountMoney: !isNaN(discountMoney) ? discountMoney : 0
         })
       },
@@ -133,10 +143,9 @@ Page({
   // 减少
   decreaseCount: function(e) {
     const { electricType } = e.target && e.target.dataset
-    const { minCount } = this.data
     const currentCount = this.data[typeObject[electricType]]
 
-    if (currentCount > minCount) {
+    if (currentCount > MINCOUNT) {
       const data = {}
       data[typeObject[electricType]] = currentCount - 1
       this.setData(data)
@@ -145,10 +154,9 @@ Page({
   // 增加
   increaseCount: function (e) {
     const { electricType } = e.target && e.target.dataset
-    const { maxCount } = this.data
     const currentCount = this.data[typeObject[electricType]]
 
-    if (currentCount < maxCount) {
+    if (currentCount < MAXCOUNT) {
       const data = {}
       data[typeObject[electricType]] = currentCount + 1
       this.setData(data)
@@ -159,7 +167,7 @@ Page({
       computerCount, microwaveCount, singleRefrigeratorCount, complexRefrigeratorCount, 
       hangAirConditionPrice, packageAirConditionPrice, kitchenVentilatorPrice, washerPrice, computerPrice, microwavePrice, 
       singleRefrigeratorPrice, complexRefrigeratorPrice, 
-      memberScale, coupons }  = this.data
+      memberScale }  = this.data
 
     const totalFee = hangAirConditionCount * hangAirConditionPrice + 
       packageAirConditionCount * packageAirConditionPrice + 
@@ -169,6 +177,7 @@ Page({
       microwaveCount * microwavePrice + 
       singleRefrigeratorCount * singleRefrigeratorPrice +
       complexRefrigeratorCount * complexRefrigeratorPrice
+    const coupons = getEligibleCoupon(totalFee)
     const discountMoney = (totalFee * memberScale + coupons).toFixed(2)
     let showText = []
 
@@ -200,7 +209,7 @@ Page({
     let showTextString = showText.join('、')
 
     this.setData({
-      totalFee, discountMoney,
+      coupons, totalFee, discountMoney,
       showText: showTextString.length > 8 ? showTextString.substring(0, 9) + '...' : showTextString
     })
   },
@@ -210,45 +219,45 @@ Page({
   },
   callService: function () {
     wx.makePhoneCall({
-      phoneNumber: serviceNumber
+      phoneNumber: SERVICENUMBER
     })
   },
   // 支付
   payMoney: function () {
-    wx.login({
-      success: function (res) {
-        const { code } = res
+    // 获取订单信息
+    let { date, multiArray, multiIndex, totalFee, coupons, memberScale, typeId, hangAirConditionCount, packageAirConditionCount,    
+      kitchenVentilatorCount, washerCount, computerCount, microwaveCount, singleRefrigeratorCount, 
+      complexRefrigeratorCount } = this.data
 
-        if (code) {
-          login({
-            method: 'POST',
-            data: {
-              loginCode: code
-            },
-            success: res => {
-              const { success = false, msg = '', noRegister = false } = res.data
-              const { userInfo } = app.globalData
+    totalFee = totalFee * (1 - memberScale) - coupons
 
-              // 登录失败
-              if (!success) {
-                if (noRegister) {
-                  // 未注册
-                  wx.navigateTo({
-                    url: '/pages/login/index'
-                  })
-                } else {
-                  console.log(msg)
-                  return
-                }
-              } else {
-                wx.showToast({
-                  title: '成功...'
-                })
-              }
-            }
-          })
-        }
-      }
+    if (!hangAirConditionCount && !packageAirConditionCount && !kitchenVentilatorCount && !washerCount && !computerCount && !microwaveCount && !singleRefrigeratorCount) {
+      showToast('至少选择一项电器！')
+      return 
+    }
+
+    const orderParentType = 5, orderTypeId = typeId
+    // 订单创建时间
+    const createTime = new Date().getTime()
+    // 预约时间
+    const orderTime = `${date} ${multiArray[0][multiIndex[0]]}${multiArray[1][multiIndex[1]]}-${multiArray[2][multiIndex[2]]}点`
+
+    // 预约时间校验
+    const formatTime = `${date} ${multiArray[1][multiIndex[1]]}:00:00`
+    if (new Date(formatTime).getTime() < createTime) {
+      console.log('选择正确的时间')
+    }
+
+    // 订单号
+    const orderId = `1${orderParentType}${orderTypeId}${getCurrentDate().join('')}${createTime}`
+
+    wxPay(orderId, totalFee, '/pages/index/index', {
+      orderTypeId,
+      orderParentType,
+      orderTime,
+      createTime,
+      specificCount: [hangAirConditionCount, packageAirConditionCount, kitchenVentilatorCount, washerCount,
+        computerCount, microwaveCount, singleRefrigeratorCount, complexRefrigeratorCount]
     })
   }
  })
