@@ -76,6 +76,9 @@ export const getRouterData = (app) => {
     '/list/price-list': {
       component: dynamicWrapper(app, ['rule'], () => import('../routes/List/TableList')),
     },
+    '/list/coupon-list': {
+      component: dynamicWrapper(app, ['rule'], () => import('../routes/List/CouponList')),
+    },
     '/dashboard/analysis': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
     },

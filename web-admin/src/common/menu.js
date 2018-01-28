@@ -7,15 +7,15 @@ const menuData = [{
 },  {
   name: '用户列表',
   icon: 'table',
-  path: 'list'
+  path: 'list/user-list'
 }, {
   name: '订单列表',
   icon: 'table',
-  path: 'list'
+  path: 'list/order-list'
 }, {
   name: '优惠券列表',
   icon: 'table',
-  path: 'list'
+  path: 'list/coupon-list'
 },  {
   name: '表单页',
   icon: 'form',

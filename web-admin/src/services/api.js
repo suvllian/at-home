@@ -1,5 +1,22 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
+const APIROOT = 'https://zaihu.zhangguanzhang.com/zaihu'
+// const APIROOT = 'http://localhost:8080/zaihu'
+
+// 获取订单信息
+export async function queryOrderTypeInfor(params) {
+  return request(`${APIROOT}/get_type_infor_list?${stringify(params)}`);
+}
+
+// 修改订单信息
+export async function editOrderTypeInfor(params) {
+  return request(`${APIROOT}/update_type_infor`, {
+    method: 'POST',
+    body: {
+      ...params
+    }
+  });
+}
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');
@@ -7,10 +24,6 @@ export async function queryProjectNotice() {
 
 export async function queryActivities() {
   return request('/api/activities');
-}
-
-export async function queryRule(params) {
-  return request(`/api/rule?${stringify(params)}`);
 }
 
 export async function removeRule(params) {
@@ -23,15 +36,7 @@ export async function removeRule(params) {
   });
 }
 
-export async function addRule(params) {
-  return request('/api/rule', {
-    method: 'POST',
-    body: {
-      ...params,
-      method: 'post',
-    },
-  });
-}
+
 
 export async function fakeSubmitForm(params) {
   return request('/api/forms', {
