@@ -1,13 +1,15 @@
-import { isUrl } from '../utils/utils';
+import {
+  isUrl
+} from '../utils/utils';
 
 const menuData = [{
   name: '价格列表',
   icon: 'table',
   path: 'list/price-list'
-},  {
+}, {
   name: '用户列表',
-  icon: 'table',
-  path: 'list'
+  icon: 'profile',
+  path: 'list/user-list'
 }, {
   name: '订单列表',
   icon: 'table',
@@ -16,7 +18,7 @@ const menuData = [{
   name: '优惠券列表',
   icon: 'table',
   path: 'list'
-},  {
+}, {
   name: '表单页',
   icon: 'form',
   path: 'form',
@@ -96,7 +98,9 @@ const menuData = [{
 
 function formatter(data, parentPath = '', parentAuthority) {
   return data.map((item) => {
-    let { path } = item;
+    let {
+      path
+    } = item;
     if (!isUrl(path)) {
       path = parentPath + item.path;
     }
