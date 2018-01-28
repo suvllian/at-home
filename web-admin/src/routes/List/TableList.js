@@ -10,48 +10,21 @@ import styles from './TableList.less';
 const FormItem = Form.Item;
 const { Option } = Select;
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
-const statusMap = ['default', 'processing', 'success', 'error'];
-const status = ['关闭', '运行中', '已上线', '异常'];
-const columns = [
-  {
-    title: '分类',
-    dataIndex: 'no',
-  },
-  {
-    title: '描述',
-    dataIndex: 'description',
-  },
-  {
-    title: '价格',
-    dataIndex: 'description',
-  },
-  {
-    title: '更新时间',
-    dataIndex: 'updatedAt',
-    sorter: true,
-    render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-  },
-  {
-    title: '操作',
-    render: () => (
-      <Fragment>
-        <a href="">修改</a>
-      </Fragment>
-    ),
-  },
-];
 
 const CreateForm = Form.create()((props) => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
+  const { modalVisible, editPriceItem = {}, form, handleEdit, handleModalVisible } = props;
+  const { id: editPriceId = 0, type_price = 0 } = editPriceItem
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
+      fieldsValue['editPriceId'] = editPriceId
       if (err) return;
-      handleAdd(fieldsValue);
+      handleEdit(fieldsValue);
     });
+    form.resetFields()
   };
   return (
     <Modal
-      title="新建规则"
+      title="修改价格"
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
@@ -59,10 +32,11 @@ const CreateForm = Form.create()((props) => {
       <FormItem
         labelCol={{ span: 5 }}
         wrapperCol={{ span: 15 }}
-        label="描述"
+        label="新价格"
       >
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: 'Please input some description...' }],
+        {form.getFieldDecorator('newPrice', {
+          initialValue: type_price,
+          rules: [{ required: true, message: '请输入价格' }]
         })(
           <Input placeholder="请输入" />
         )}
@@ -78,6 +52,7 @@ const CreateForm = Form.create()((props) => {
 @Form.create()
 export default class TableList extends PureComponent {
   state = {
+    editPriceItem: {},
     modalVisible: false,
     expandForm: false,
     selectedRows: [],
@@ -88,6 +63,72 @@ export default class TableList extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'rule/fetch',
+    });
+  }
+
+  renderCloumn () {
+    return [
+      {
+        title: '分类',
+        dataIndex: 'type_description',
+      },
+      {
+        title: '描述',
+        dataIndex: 'type_name',
+      },
+      {
+        title: '价格',
+        dataIndex: 'type_price',
+      },
+      {
+        title: '操作',
+        dataIndex: 'id',
+        render: (value, record, index) => { 
+          return (
+          <Fragment>
+            <a href="javascript:void(0)" onClick={this.handleChangePrice.bind(this, record)}>修改</a>
+          </Fragment>
+        )}
+      }
+    ]
+  }
+
+  // 修改价格
+  handleChangePrice(editPriceItem = {}) {
+    this.setState({
+      editPriceItem
+    })
+    this.handleModalVisible()
+  }
+
+  //对话框
+  handleModalVisible = () => {
+    this.setState({
+      modalVisible: !this.state.modalVisible
+    });
+  }
+
+  // 修改价格
+  handleEdit = (fields) => {
+    const { dispatch } = this.props;
+    const { formValues } = this.state
+    dispatch({
+      type: 'rule/edit',
+      payload: {
+        id: fields.editPriceId,
+        newPrice: parseInt(fields.newPrice)
+      }
+    });
+
+    setTimeout(() => {
+      dispatch({
+        type: 'rule/fetch',
+        payload: formValues
+      });
+    }, 1000)
+
+    this.setState({
+      modalVisible: false
     });
   }
 
@@ -117,55 +158,6 @@ export default class TableList extends PureComponent {
     });
   }
 
-  handleFormReset = () => {
-    const { form, dispatch } = this.props;
-    form.resetFields();
-    this.setState({
-      formValues: {},
-    });
-    dispatch({
-      type: 'rule/fetch',
-      payload: {},
-    });
-  }
-
-  toggleForm = () => {
-    this.setState({
-      expandForm: !this.state.expandForm,
-    });
-  }
-
-  handleMenuClick = (e) => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (!selectedRows) return;
-
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'rule/remove',
-          payload: {
-            no: selectedRows.map(row => row.no).join(','),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
-    }
-  }
-
-  handleSelectRows = (rows) => {
-    this.setState({
-      selectedRows: rows,
-    });
-  }
-
   handleSearch = (e) => {
     e.preventDefault();
 
@@ -176,65 +168,18 @@ export default class TableList extends PureComponent {
 
       const values = {
         ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf()
       };
 
       this.setState({
-        formValues: values,
+        formValues: values
       });
 
       dispatch({
         type: 'rule/fetch',
-        payload: values,
+        payload: values
       });
     });
-  }
-
-  handleModalVisible = (flag) => {
-    this.setState({
-      modalVisible: !!flag,
-    });
-  }
-
-  handleAdd = (fields) => {
-    this.props.dispatch({
-      type: 'rule/add',
-      payload: {
-        description: fields.desc,
-      },
-    });
-
-    message.success('添加成功');
-    this.setState({
-      modalVisible: false,
-    });
-  }
-
-  renderSimpleForm() {
-    const { getFieldDecorator } = this.props.form;
-    return (
-      <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="规则编号">
-              {getFieldDecorator('no')(
-                <Input placeholder="请输入" />
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-        </Row>
-      </Form>
-    );
   }
 
   renderAdvancedForm() {
@@ -244,17 +189,23 @@ export default class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="类型">
-              {getFieldDecorator('status4')(
+              {getFieldDecorator('orderParentType')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">全屋保洁</Option>
-                  <Option value="1">钟点保洁</Option>
-                  <Option value="2">擦玻璃</Option>
-                  <Option value="3">厨卫清洁</Option>
-                  <Option value="4">家电清洗</Option>
-                  <Option value="5">家居养护</Option>
+                  <Option value="">全部</Option>
+                  <Option value="1">全屋保洁</Option>
+                  <Option value="2">钟点保洁</Option>
+                  <Option value="3">擦玻璃</Option>
+                  <Option value="4">厨卫清洁</Option>
+                  <Option value="5">家电清洗</Option>
+                  <Option value="6">家居养护</Option>
                 </Select>
               )}
             </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <span className={styles.submitButtons}>
+              <Button type="primary" htmlType="submit">查询</Button>
+            </span>
           </Col>
         </Row>
       </Form>
@@ -263,18 +214,11 @@ export default class TableList extends PureComponent {
 
   render() {
     const { rule: { data }, loading } = this.props;
-    const { selectedRows, modalVisible } = this.state;
-
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
-      </Menu>
-    );
+    const { selectedRows, modalVisible, editPriceItem } = this.state;
 
     const parentMethods = {
-      handleAdd: this.handleAdd,
-      handleModalVisible: this.handleModalVisible,
+      handleEdit: this.handleEdit,
+      handleModalVisible: this.handleModalVisible
     };
 
     return (
@@ -288,8 +232,7 @@ export default class TableList extends PureComponent {
               selectedRows={selectedRows}
               loading={loading}
               data={data}
-              columns={columns}
-              onSelectRow={this.handleSelectRows}
+              columns={this.renderCloumn()}
               onChange={this.handleStandardTableChange}
             />
           </div>
@@ -297,6 +240,7 @@ export default class TableList extends PureComponent {
         <CreateForm
           {...parentMethods}
           modalVisible={modalVisible}
+          editPriceItem={editPriceItem}
         />
       </PageHeaderLayout>
     );

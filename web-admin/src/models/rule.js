@@ -1,4 +1,4 @@
-import { queryRule, removeRule, addRule } from '../services/api';
+import { queryOrderTypeInfor, editOrderTypeInfor } from '../services/api';
 
 export default {
   namespace: 'rule',
@@ -12,36 +12,26 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryRule, payload);
+      const response = yield call(queryOrderTypeInfor, payload);
       yield put({
         type: 'save',
-        payload: response,
+        payload: {
+          list: response && response.data
+        },
       });
     },
-    *add({ payload, callback }, { call, put }) {
-      const response = yield call(addRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
-    *remove({ payload, callback }, { call, put }) {
-      const response = yield call(removeRule, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-      if (callback) callback();
-    },
+    *edit({ payload, callback }, { call, put }) {
+      const response = yield call(editOrderTypeInfor, payload);
+      if (callback) callback()
+    }
   },
 
   reducers: {
     save(state, action) {
       return {
         ...state,
-        data: action.payload,
+        data: action.payload
       };
-    },
-  },
+    }
+  }
 };

@@ -1,10 +1,10 @@
-import { getUserList } from '../services/userList';
+import { getUserList } from '../services/api';
 
 export default {
   namespace: 'userList',
 
   state: {
-    list: [],
+    data: [],
   },
 
   effects: {
@@ -12,7 +12,7 @@ export default {
       const response = yield call(getUserList, payload);
       yield put({
         type: 'queryList',
-        payload: response,
+        payload: response && response.data,
       });
     },
   },
@@ -21,7 +21,7 @@ export default {
     queryList(state, action) {
       return {
         ...state,
-        list: action.payload,
+        data: action.payload,
       };
     },
   },

@@ -11,14 +11,19 @@ const menuData = [{
   icon: 'profile',
   path: 'list/user-list'
 }, {
+  name: '个人信息',
+  icon: 'profile',
+  path: 'profile',
+  hideInMenu: true
+}, {
   name: '订单列表',
   icon: 'table',
-  path: 'list'
+  path: 'list/order-list'
 }, {
   name: '优惠券列表',
   icon: 'table',
-  path: 'list'
-}, {
+  path: 'list/coupon-list'
+},  {
   name: '表单页',
   icon: 'form',
   path: 'form',
@@ -32,18 +37,6 @@ const menuData = [{
     name: '高级表单',
     authority: 'admin',
     path: 'advanced-form',
-  }],
-}, {
-  name: '详情页',
-  icon: 'profile',
-  path: 'profile',
-  children: [{
-    name: '基础详情页',
-    path: 'basic',
-  }, {
-    name: '高级详情页',
-    path: 'advanced',
-    authority: 'admin',
   }],
 }, {
   name: '结果页',

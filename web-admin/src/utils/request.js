@@ -3,6 +3,7 @@ import { notification } from 'antd';
 import { routerRedux } from 'dva/router';
 import store from '../index';
 
+const APIROOT = 'http://localhost:8080/zaihu'
 const codeMessage = {
   200: '服务器成功返回请求的数据',
   201: '新建或修改数据成功。',
@@ -50,10 +51,17 @@ export default function request(url, options) {
   if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
     newOptions.headers = {
       Accept: 'application/json',
-      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Type': 'application/x-www-form-urlencoded',
       ...newOptions.headers,
     };
-    newOptions.body = JSON.stringify(newOptions.body);
+    const paramArray = []
+    const params = newOptions.body
+    for (const key in params) {
+      if (params.hasOwnProperty(key)) {
+        paramArray.push(`${key}=${params[key]}`)
+      }
+    }
+    newOptions.body = paramArray.join('&')
   }
 
   return fetch(url, newOptions)
