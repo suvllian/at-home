@@ -1,8 +1,8 @@
 import { getOrderTypeInfo } from '../../api/index.js'
 import { SERVICENUMBER, TIMEPICKERVALUE } from '../../config.js'
-import { getCurrentDate } from '../../utils/util.js'
+import { getCurrentDate, showToast } from '../../utils/util.js'
 import { wxPay } from '../../utils/pay.js'
-import { getEligibleCoupon, getMemberScale } from '../../utils/storage.js'
+import { getEligibleCoupon, getMemberScale, clearCouponInfo } from '../../utils/storage.js'
 var app = getApp()
 
 Page({
@@ -36,6 +36,8 @@ Page({
       memberScale
     })
 
+    // 加载中
+    wx.showLoading()
     if (choosedAddress.addressName) {
       this.setData({
         addressName: choosedAddress.addressName
@@ -59,6 +61,9 @@ Page({
         const coupons = getEligibleCoupon(totalFee)
         const discountMoney = (priceList[selectedIndex] * memberScale + coupons).toFixed(2)
 
+        // 关闭loading
+        wx.hideLoading()
+
         $that.setData({
           totalFee, coupons, typeInformation: list,
           typeNameArray, priceList: priceList.length ? priceList : [],
@@ -69,8 +74,14 @@ Page({
         this.setData({
           priceList: [0]
         })
+        // 关闭loading
+        wx.hideLoading()
+        showToast('获取数据失败')
       }
     })
+  },
+  onUnload: function () {
+    clearCouponInfo()
   },
   // 修改服务时长
   bindPickerChange: function (e) {

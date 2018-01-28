@@ -4,6 +4,11 @@ const app = getApp()
 export const getEligibleCoupon = (totalFee) => {
   const couponsInfo = wx.getStorageSync(COUPONSTORAGEKEY) || []
   const eligibleCoupons = couponsInfo.filter(item => item.coupons_money <= totalFee)
+  const selectCoupon = app.globalData.couponInfo
+
+  if (selectCoupon && selectCoupon.coupons_money) {
+    return selectCoupon.coupons_money
+  }
 
   if (eligibleCoupons.length) {
     app.globalData.couponInfo = eligibleCoupons[0]
@@ -24,4 +29,8 @@ export const getUserPhone = () => {
   const { phone = '' } = userInfo
 
   return phone
+}
+
+export const clearCouponInfo = () => {
+  app.globalData.couponInfo = {}
 }

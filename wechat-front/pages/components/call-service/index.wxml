@@ -3,7 +3,7 @@
 <view class="order-row" bindtap="callService">
   <view class="contact-service">
     <view class="flex-ver-center-container">
-      <image src="./../../../assets/images/phone_icon.png" class="icon"></image>
+      <image src="./../../assets/images/phone_icon.png" class="icon"></image>
       <text class="font-28">联系客服</text>
     </view>
   </view>

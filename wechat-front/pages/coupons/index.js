@@ -89,7 +89,6 @@ Page({
     }
 
     const { selectCoupon = {} } = e.currentTarget.dataset
-
     const { coupons_money = 0, has_used = 1 } = selectCoupon
     if (has_used) {
       showToast('券已使用')
@@ -101,7 +100,7 @@ Page({
       return 
     }
 
-    app.globalData.choosedCoupon = selectCoupon
+    app.globalData.couponInfo = selectCoupon
     wx.navigateBack({
       delta: 1
     })

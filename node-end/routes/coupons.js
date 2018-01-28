@@ -4,8 +4,7 @@ var utils = require('./../utils/index.js');
 var Model = require('./../models/model');
 var services = require('./../services/index');
 
-// 获取券列表
-router.get('/get_coupons_list', function(req, res, next) {
+function getCouponsList(req, res, sql) {
   var { phone, code: loginCode } = req.query
 
   if (!phone || !loginCode) {
@@ -30,10 +29,9 @@ router.get('/get_coupons_list', function(req, res, next) {
           msg: '未注册'
         })
       }
-
       var { id: userId } = getUserIdResult[0] || {}
 
-      new Model('query_coupon_list').operate([userId]).then(getCouponListResult => {
+      new Model(sql).operate([userId]).then(getCouponListResult => {
         return utils.successRes(res, {
           data: getCouponListResult
         })
@@ -50,6 +48,16 @@ router.get('/get_coupons_list', function(req, res, next) {
       })
     })
   })
+}
+
+// 获取可用的券列表
+router.get('/get_effective_coupons', function(req, res, next) {
+  getCouponsList(req, res, 'query_effictive_coupon')
+})
+
+// 获取券列表
+router.get('/get_coupons_list', function(req, res, next) {
+  getCouponsList(req, res, 'query_coupon_list')
 })
 
 // 兑换抵用券
@@ -80,7 +88,7 @@ router.post('/exchange_sent_coupon', function(req, res, next) {
         })
       }
       
-      new Model('query_sent_coupon').operate([couponCode]).then(isHasSentCoupon => {
+      new Model('query_sent_coupon').operate([couponCode, currentTime]).then(isHasSentCoupon => {
         if (!isHasSentCoupon || !isHasSentCoupon.length) {
           return utils.failRes(res, {
             msg: '无效抵用券凭证码'

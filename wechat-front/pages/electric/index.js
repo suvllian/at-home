@@ -1,6 +1,6 @@
 import { getOrderTypeInfo, login } from '../../api/index.js'
 import { SERVICENUMBER, TIMEPICKERVALUE, MAXCOUNT, MINCOUNT } from '../../config.js'
-import { getEligibleCoupon, getMemberScale } from '../../utils/storage.js'
+import { getEligibleCoupon, getMemberScale, clearCouponInfo } from '../../utils/storage.js'
 import { getCurrentDate, showToast } from '../../utils/util.js'
 import { wxPay } from '../../utils/pay.js'
 
@@ -81,6 +81,9 @@ Page({
       memberScale
     })
 
+    // 加载中
+    wx.showLoading()
+
     if (choosedAddress.addressName) {
       this.setData({
         addressName: choosedAddress.addressName
@@ -104,6 +107,8 @@ Page({
         const totalFee = hangAirConditionCount * newPriceObject['hangAirConditionPrice']
         const coupons = getEligibleCoupon(totalFee)
         const discountMoney = (totalFee * memberScale + coupons).toFixed(2)
+        // 关闭loading
+        wx.hideLoading()
 
         $that.setData({
           ...newPriceObject,
@@ -112,9 +117,14 @@ Page({
         })
       },
       fail: err => {
-
+        // 关闭loading
+        wx.hideLoading()
+        showToast('获取数据失败')
       }
     })
+  },
+  onUnload: function () {
+    clearCouponInfo()
   },
   bindPickerChange: function (e) {
     this.setData({

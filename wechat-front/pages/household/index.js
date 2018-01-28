@@ -1,7 +1,7 @@
 import { getOrderTypeInfo, login } from '../../api/index.js'
-import { SERVICENUMBER, TIMEPICKERVALUE, MAXCOUNT, MINCOUNT, STORAGEKEY } from '../../config.js'
+import { SERVICENUMBER, TIMEPICKERVALUE, MAXCOUNT, MINCOUNT } from '../../config.js'
 import { getCurrentDate, showToast } from '../../utils/util.js'
-import { getEligibleCoupon, getMemberScale } from '../../utils/storage.js'
+import { getEligibleCoupon, getMemberScale, clearCouponInfo } from '../../utils/storage.js'
 import { wxPay } from '../../utils/pay.js'
 
 const pickArray = ['一', '两', '三', '四', '五', '六', '七', '八', '九', '十']
@@ -64,6 +64,9 @@ Page({
       memberScale
     })
 
+    // 加载中
+    wx.showLoading()
+
     if (choosedAddress.addressName) {
       this.setData({
         addressName: choosedAddress.addressName
@@ -87,14 +90,24 @@ Page({
         const totalFee = sofaCount * newPriceObject['sofaPrice']
         const coupons = getEligibleCoupon(totalFee)
         const discountMoney = (totalFee * memberScale + coupons).toFixed(2)
+        // 关闭loading
+        wx.hideLoading()
 
         $that.setData({
           ...newPriceObject, 
           totalFee, typeId, coupons,
           discountMoney: !isNaN(discountMoney) ? discountMoney : 0
         })
+      },
+      fail: err => {
+        // 关闭loading
+        wx.hideLoading()
+        showToast('获取数据失败')
       }
     })
+  },
+  onUnload: function () {
+    clearCouponInfo()
   },
   bindPickerChange: function (e) {
     this.setData({

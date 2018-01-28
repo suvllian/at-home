@@ -12,11 +12,12 @@ var config = require('./../config/index.js');
 var services = require('./../services/index');
 
 router.post('/pay_order', function(req, res, next) {
-  var { orderId, loginCode, totalFee, orderTime, createTime, addressId, orderParentType, orderTypeId, specificCount, phone } = req.body
+  var { orderId, loginCode, totalFee, orderTime, createTime, addressId, orderParentType, orderTypeId, specificCount, phone, couponId } = req.body
+  couponId = couponId ? couponId : 0
 
   if (!orderId || !totalFee || !orderTime || !createTime || !addressId || !orderParentType || !orderTypeId || !phone) {
     return utils.failRes(res, {
-      msg: '参数有误'
+      msg: '支付请求参数有误'
     })
   }
 
@@ -92,31 +93,36 @@ router.post('/pay_order', function(req, res, next) {
 
               if (orderClassTypeId == '1') {
                 // 家政服务订单
-                new Model('insert_new_order').operate([userId, orderId, orderParentType, orderTypeId, orderTime, orderDescription, createTime, totalFee, addressId, 0, 0]).then((newOrderResult = {}) => {
-                  return newOrderResult.insertId ? utils.successRes(res, {
+                new Model('insert_new_order').operate([userId, orderId, orderParentType, orderTypeId, orderTime, orderDescription, 
+                  createTime, totalFee, addressId, 0, couponId]).then((newOrderResult = {}) => {
+                  var { insertId: newOrderId } = newOrderResult
+                  if (!newOrderId) {
+                    return  utils.failRes(res, {
+                      msg: '下单失败'
+                    })
+                  }
+                  return utils.successRes(res, {
                     data: {
+                      newOrderId,
                       prepay_id: wechatPayResult['prepay_id'],
                       nonce_str: wechatPayResult['nonce_str']
                     }
-                  }) : utils.failRes(res, {
-                    msg: '下单失败1'
                   })
                 })
                 .catch(err => {
                   console.log(err)
                   return utils.failRes(res, {
-                    msg: '下单失败2'
+                    msg: '下单失败'
                   })
                 })
               }
               
-             })
-             .catch(err => {
+             }).catch(err => {
               console.log(err)
               return utils.failRes(res, {
-                msg: '下单失败3'
+                msg: '下单失败'
               })
-             })
+            })
           } else {
             return utils.failRes(res)
           }
@@ -130,7 +136,8 @@ router.post('/pay_order', function(req, res, next) {
 
 // 验证订单是否支付成功
 router.post('/check_pay', function(req, res, next) {
-  const { orderId } = req.body
+  const { orderId, newOrderId, couponId } = req.body
+  const createTime = new Date().getTime()
 
   const params = {
     // 小程序id
@@ -167,6 +174,13 @@ router.post('/check_pay', function(req, res, next) {
           
           if (payStatus === 'SUCCESS') {
             new Model('update_order_status').operate([orderId]).then(updateStatusResult => {
+              if (couponId) {
+                new Model('update_use_sent_coupon').operate([createTime, newOrderId, couponId]).then(useCouponResult => {
+                  console.log('使用卡券成功')
+                }).catch(error => {
+                  console.log('使用卡券失败')
+                })
+              } 
               return utils.successRes(res, {
                 msg: '支付成功'
               })

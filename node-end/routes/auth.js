@@ -115,7 +115,7 @@ router.post('/get_phone_code', function(req, res, next) {
 router.post('/register', function(req, res, next) {
   var { phoneNumber, verifyCode, loginCode, nickName = '' } = req.body
 
-  if (!phoneNumber || !verifyCode || !loginCode) {
+  if (!phoneNumber || !verifyCode || !loginCode || !nickName) {
     return utils.failRes(res, {
       msg: '注册失败，信息不完整'
     })

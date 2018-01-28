@@ -10,7 +10,7 @@ router.get('/get_address_list', function(req, res, next) {
 
   if (!loginCode || !phone) {
     return utils.failRes(res, {
-      msg: '参数有误'
+      msg: '请求地址列表参数有误'
     })
   }
 
@@ -19,7 +19,7 @@ router.get('/get_address_list', function(req, res, next) {
 
     if (!openid) {
       return utils.failRes(res, {
-        msg: '获取地址失败'
+        msg: '获取地址列表失败'
       })
     }
 
@@ -30,7 +30,7 @@ router.get('/get_address_list', function(req, res, next) {
     })
     .catch(error => {
       return utils.failRes(res, {
-        msg: '查询地址失败'
+        msg: '获取地址列表失败'
       })
     })
   })
@@ -42,7 +42,7 @@ router.post('/add_address', function(req, res, next) {
 
   if (!loginCode || !name || (isMale !== 0 && isMale !== 1) || !phone || !area || !specificAddress || !userPhone) {
     return utils.failRes(res, {
-      msg: '参数有误'
+      msg: '添加地址请求参数有误'
     })
   }
 
@@ -51,7 +51,7 @@ router.post('/add_address', function(req, res, next) {
 
     if (!openid) {
       return utils.failRes(res, {
-        msg: '用户验证失败'
+        msg: '用户身份验证失败'
       })
     }
 
@@ -69,7 +69,7 @@ router.post('/add_address', function(req, res, next) {
         })
       } else {
         return utils.failRes(res, {
-          msg: '添加地址失败'
+          msg: '用户身份验证失败'
         })
       }
     })
