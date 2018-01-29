@@ -14,60 +14,48 @@ const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['关闭', '运行中', '已上线', '异常'];
 const columns = [
   {
-    title: '规则编号',
-    dataIndex: 'no',
+    title: '卡券凭证码',
+    dataIndex: 'coupon_code',
   },
   {
-    title: '描述',
-    dataIndex: 'description',
+    title: '卡券额度',
+    dataIndex: 'money_number',
   },
   {
-    title: '服务调用次数',
-    dataIndex: 'callNo',
-    sorter: true,
-    align: 'right',
-    render: val => `${val} 万`,
-    // mark to display a total number
-    needTotal: true,
+    title: '创建时间',
+    dataIndex: 'gmt_create',
+    render: (val) => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>)
   },
   {
-    title: '状态',
-    dataIndex: 'status',
-    filters: [
-      {
-        text: status[0],
-        value: 0,
-      },
-      {
-        text: status[1],
-        value: 1,
-      },
-      {
-        text: status[2],
-        value: 2,
-      },
-      {
-        text: status[3],
-        value: 3,
-      },
-    ],
-    render(val) {
-      return <Badge status={statusMap[val]} text={status[val]} />;
-    },
+    title: '失效时间',
+    dataIndex: 'invalid_time',
+    render: (val) => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>)
   },
   {
-    title: '更新时间',
-    dataIndex: 'updatedAt',
-    sorter: true,
-    render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+    title: '兑换时间',
+    dataIndex: 'gmt_exchange',
+    render: (val) => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>)
+  },
+  {
+    title: '领用人',
+    dataIndex: 'customer_id',
+    render: (val) => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>)
+  },
+  {
+    title: '已兑换',
+    dataIndex: 'has_exchanged',
+    render: (val) => (<span>{val ? '是' : '否'}</span>)
+  },
+  {
+    title: '已使用',
+    dataIndex: 'has_used',
+    render: (val) => (<span>{val ? '是' : '否'}</span>)
   },
   {
     title: '操作',
     render: () => (
       <Fragment>
-        <a href="">配置</a>
-        <Divider type="vertical" />
-        <a href="">订阅警报</a>
+        <a href="#">操作</a>
       </Fragment>
     ),
   },
@@ -267,10 +255,6 @@ export default class TableList extends PureComponent {
           <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">查询</Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>重置</Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                展开 <Icon type="down" />
-              </a>
             </span>
           </Col>
         </Row>
