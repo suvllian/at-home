@@ -18,6 +18,17 @@ export async function editOrderTypeInfor(params) {
   });
 }
 
+// 获取用户列表
+export async function getUserList() {
+  return request(`${APIROOT}/get_user_list`);
+}
+
+// 获取个人信息
+export async function getUserInfo(params) {
+  return request(`${APIROOT}/get_user_infor?${stringify(params)}`);
+}
+
+
 export async function queryProjectNotice() {
   return request('/api/project/notice');
 }

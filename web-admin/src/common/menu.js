@@ -1,13 +1,20 @@
-import { isUrl } from '../utils/utils';
+import {
+  isUrl
+} from '../utils/utils';
 
 const menuData = [{
   name: '价格列表',
   icon: 'table',
   path: 'list/price-list'
-},  {
+}, {
   name: '用户列表',
-  icon: 'table',
+  icon: 'profile',
   path: 'list/user-list'
+}, {
+  name: '个人信息',
+  icon: 'profile',
+  path: 'profile',
+  hideInMenu: true
 }, {
   name: '订单列表',
   icon: 'table',
@@ -30,18 +37,6 @@ const menuData = [{
     name: '高级表单',
     authority: 'admin',
     path: 'advanced-form',
-  }],
-}, {
-  name: '详情页',
-  icon: 'profile',
-  path: 'profile',
-  children: [{
-    name: '基础详情页',
-    path: 'basic',
-  }, {
-    name: '高级详情页',
-    path: 'advanced',
-    authority: 'admin',
   }],
 }, {
   name: '结果页',
@@ -96,7 +91,9 @@ const menuData = [{
 
 function formatter(data, parentPath = '', parentAuthority) {
   return data.map((item) => {
-    let { path } = item;
+    let {
+      path
+    } = item;
     if (!isUrl(path)) {
       path = parentPath + item.path;
     }

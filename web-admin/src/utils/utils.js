@@ -157,3 +157,20 @@ const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-
 export function isUrl(path) {
   return reg.test(path);
 }
+
+
+export function getUrlHashParam(key) {
+  let search = location.hash;
+  let arr = [];
+  if (!search) {
+      arr = [];
+  } else if (search.substr(1).split('?').length) {
+      arr = (search.substr(1).split('?'))[1] ? (search.substr(1).split('?'))[1].substr(0).split('&') : [];
+  }
+  let param = {};
+  for (let i = 0, l = arr.length; i < l; i++) {
+    let kv = arr[i].split('=');
+      param[kv[0]] = kv[1];
+  }
+  return key ? (param[key] || '') : param;
+}
