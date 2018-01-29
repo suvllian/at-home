@@ -4,22 +4,8 @@ import DocumentTitle from 'react-document-title';
 import { Icon } from 'antd';
 import GlobalFooter from '../components/GlobalFooter';
 import styles from './UserLayout.less';
-import logo from '../assets/logo.svg';
+import logo from '../assets/logo.jpg';
 import { getRoutes } from '../utils/utils';
-
-const links = [{
-  key: 'help',
-  title: '帮助',
-  href: '',
-}, {
-  key: 'privacy',
-  title: '隐私',
-  href: '',
-}, {
-  key: 'terms',
-  title: '条款',
-  href: '',
-}];
 
 const copyright = <div>Copyright <Icon type="copyright" /> 西安在乎网络科技有限公司</div>;
 
@@ -27,9 +13,9 @@ class UserLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = '在乎';
+    let title = '在乎生活';
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - 在乎`;
+      title = `${routerData[pathname].name} - 在乎生活`;
     }
     return title;
   }
@@ -43,10 +29,10 @@ class UserLayout extends React.PureComponent {
               <div className={styles.header}>
                 <Link to="/">
                   <img alt="logo" className={styles.logo} src={logo} />
-                  <span className={styles.title}>Ant Design</span>
+                  <span className={styles.title}>在乎生活</span>
                 </Link>
               </div>
-              <div className={styles.desc}>Ant Design 是西湖区最具影响力的 Web 设计规范</div>
+              <div className={styles.desc}>专注于打造本地化全屋清洁服务平台</div>
             </div>
             <Switch>
               {getRoutes(match.path, routerData).map(item =>
@@ -62,7 +48,7 @@ class UserLayout extends React.PureComponent {
               <Redirect exact from="/user" to="/user/login" />
             </Switch>
           </div>
-          <GlobalFooter links={links} copyright={copyright} />
+          <GlobalFooter copyright={copyright} />
         </div>
       </DocumentTitle>
     );

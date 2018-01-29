@@ -24,32 +24,32 @@ const columns = [
   {
     title: '创建时间',
     dataIndex: 'gmt_create',
-    render: (val) => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>)
+    render: val => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>),
   },
   {
     title: '失效时间',
     dataIndex: 'invalid_time',
-    render: (val) => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>)
+    render: val => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>),
   },
   {
     title: '兑换时间',
     dataIndex: 'gmt_exchange',
-    render: (val) => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>)
+    render: val => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>),
   },
   {
     title: '领用人',
     dataIndex: 'customer_id',
-    render: (val) => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>)
+    render: val => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>),
   },
   {
     title: '已兑换',
     dataIndex: 'has_exchanged',
-    render: (val) => (<span>{val ? '是' : '否'}</span>)
+    render: val => (<span>{val ? '是' : '否'}</span>),
   },
   {
     title: '已使用',
     dataIndex: 'has_used',
-    render: (val) => (<span>{val ? '是' : '否'}</span>)
+    render: val => (<span>{val ? '是' : '否'}</span>),
   },
   {
     title: '操作',

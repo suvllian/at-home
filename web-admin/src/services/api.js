@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
-const APIROOT = 'https://zaihu.zhangguanzhang.com/zaihu'
-// const APIROOT = 'http://localhost:8080/zaihu'
+// const APIROOT = 'https://zaihu.zhangguanzhang.com/zaihu'
+const APIROOT = 'http://localhost:8080/zaihu';
 
 // 获取订单信息
 export async function queryOrderTypeInfor(params) {
@@ -13,10 +13,21 @@ export async function editOrderTypeInfor(params) {
   return request(`${APIROOT}/update_type_infor`, {
     method: 'POST',
     body: {
-      ...params
-    }
+      ...params,
+    },
   });
 }
+
+// 获取用户列表
+export async function getUserList() {
+  return request(`${APIROOT}/get_user_list`);
+}
+
+// 获取个人信息
+export async function getUserInfo(params) {
+  return request(`${APIROOT}/get_user_infor?${stringify(params)}`);
+}
+
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');
@@ -35,7 +46,6 @@ export async function removeRule(params) {
     },
   });
 }
-
 
 
 export async function fakeSubmitForm(params) {

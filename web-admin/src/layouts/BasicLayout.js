@@ -14,7 +14,7 @@ import NotFound from '../routes/Exception/404';
 import { getRoutes } from '../utils/utils';
 import Authorized from '../utils/Authorized';
 import { getMenuData } from '../common/menu';
-import logo from '../assets/logo.svg';
+import logo from '../assets/logo.jpg';
 
 const { Content } = Layout;
 const { AuthorizedRoute } = Authorized;
@@ -92,9 +92,9 @@ class BasicLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = '在乎';
+    let title = '在乎生活';
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - 在乎`;
+      title = `${routerData[pathname].name} - 在乎生活`;
     }
     return title;
   }
@@ -109,7 +109,7 @@ class BasicLayout extends React.PureComponent {
       urlParams.searchParams.delete('redirect');
       window.history.replaceState(null, 'redirect', urlParams.href);
     } else {
-      return '/list/price-list';
+      return '/list/user-list';
     }
     return redirect;
   }

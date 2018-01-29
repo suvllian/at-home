@@ -13,14 +13,14 @@ const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
 
 const CreateForm = Form.create()((props) => {
   const { modalVisible, editPriceItem = {}, form, handleEdit, handleModalVisible } = props;
-  const { id: editPriceId = 0, type_price = 0 } = editPriceItem
+  const { id: editPriceId = 0, type_price = 0 } = editPriceItem;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
-      fieldsValue['editPriceId'] = editPriceId
+      fieldsValue.editPriceId = editPriceId;
       if (err) return;
       handleEdit(fieldsValue);
     });
-    form.resetFields()
+    form.resetFields();
   };
   return (
     <Modal
@@ -36,7 +36,7 @@ const CreateForm = Form.create()((props) => {
       >
         {form.getFieldDecorator('newPrice', {
           initialValue: type_price,
-          rules: [{ required: true, message: '请输入价格' }]
+          rules: [{ required: true, message: '请输入价格' }],
         })(
           <Input placeholder="请输入" />
         )}
@@ -66,7 +66,7 @@ export default class TableList extends PureComponent {
     });
   }
 
-  renderCloumn () {
+  renderCloumn() {
     return [
       {
         title: '分类',
@@ -83,52 +83,53 @@ export default class TableList extends PureComponent {
       {
         title: '操作',
         dataIndex: 'id',
-        render: (value, record, index) => { 
+        render: (value, record, index) => {
           return (
-          <Fragment>
-            <a href="javascript:void(0)" onClick={this.handleChangePrice.bind(this, record)}>修改</a>
-          </Fragment>
-        )}
-      }
-    ]
+            <Fragment>
+              <a href="javascript:void(0)" onClick={this.handleChangePrice.bind(this, record)}>修改</a>
+            </Fragment>
+          );
+        },
+      },
+    ];
   }
 
   // 修改价格
   handleChangePrice(editPriceItem = {}) {
     this.setState({
-      editPriceItem
-    })
-    this.handleModalVisible()
+      editPriceItem,
+    });
+    this.handleModalVisible();
   }
 
-  //对话框
+  // 对话框
   handleModalVisible = () => {
     this.setState({
-      modalVisible: !this.state.modalVisible
+      modalVisible: !this.state.modalVisible,
     });
   }
 
   // 修改价格
   handleEdit = (fields) => {
     const { dispatch } = this.props;
-    const { formValues } = this.state
+    const { formValues } = this.state;
     dispatch({
       type: 'rule/edit',
       payload: {
         id: fields.editPriceId,
-        newPrice: parseInt(fields.newPrice)
-      }
+        newPrice: parseInt(fields.newPrice),
+      },
     });
 
     setTimeout(() => {
       dispatch({
         type: 'rule/fetch',
-        payload: formValues
+        payload: formValues,
       });
-    }, 1000)
+    }, 1000);
 
     this.setState({
-      modalVisible: false
+      modalVisible: false,
     });
   }
 
@@ -168,16 +169,16 @@ export default class TableList extends PureComponent {
 
       const values = {
         ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf()
+        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
       };
 
       this.setState({
-        formValues: values
+        formValues: values,
       });
 
       dispatch({
         type: 'rule/fetch',
-        payload: values
+        payload: values,
       });
     });
   }
@@ -218,7 +219,7 @@ export default class TableList extends PureComponent {
 
     const parentMethods = {
       handleEdit: this.handleEdit,
-      handleModalVisible: this.handleModalVisible
+      handleModalVisible: this.handleModalVisible,
     };
 
     return (

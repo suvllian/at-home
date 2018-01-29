@@ -16,22 +16,22 @@ export default {
       yield put({
         type: 'save',
         payload: {
-          list: response && response.data
+          list: response && response.data,
         },
       });
     },
     *edit({ payload, callback }, { call, put }) {
       const response = yield call(editOrderTypeInfor, payload);
-      if (callback) callback()
-    }
+      if (callback) callback();
+    },
   },
 
   reducers: {
     save(state, action) {
       return {
         ...state,
-        data: action.payload
+        data: action.payload,
       };
-    }
-  }
+    },
+  },
 };
