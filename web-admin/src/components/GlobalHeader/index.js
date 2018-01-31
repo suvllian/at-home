@@ -54,9 +54,10 @@ export default class GlobalHeader extends PureComponent {
   }
   render() {
     const {
-      currentUser, collapsed, fetchingNotices, isMobile, logo,
+      collapsed, fetchingNotices, isMobile, logo,
       onNoticeVisibleChange, onMenuClick, onNoticeClear,
     } = this.props;
+    const currentUser = { name: '在乎', avatar: 'https://wx.qlogo.cn/mmhead/Q3auHgzwzM4mic4Q4PCIrpTF7yM3kMslFribD3H1C8KvF1AfrXkWiaDtw/0' }
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
         <Menu.Item key="logout"><Icon type="logout" />退出登录</Menu.Item>
@@ -84,7 +85,6 @@ export default class GlobalHeader extends PureComponent {
           {currentUser.name ? (
             <Dropdown overlay={menu}>
               <span className={`${styles.action} ${styles.account}`}>
-                <Avatar size="small" className={styles.avatar} src={currentUser.avatar} />
                 <span className={styles.name}>{currentUser.name}</span>
               </span>
             </Dropdown>

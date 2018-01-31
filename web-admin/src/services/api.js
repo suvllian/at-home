@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
-// const APIROOT = 'https://zaihu.zhangguanzhang.com/zaihu'
-const APIROOT = 'http://localhost:8080/zaihu';
+const APIROOT = 'https://zaihu.zhangguanzhang.com/zaihu'
+// const APIROOT = 'http://localhost:8080/zaihu';
 
 // 获取订单信息
 export async function queryOrderTypeInfor(params) {
@@ -28,6 +28,20 @@ export async function getUserInfo(params) {
   return request(`${APIROOT}/get_user_infor?${stringify(params)}`);
 }
 
+// 获取抵用券列表
+export async function getSendCouponsList(params) {
+  return request(`${APIROOT}/get_all_coupons_list?${stringify(params)}`);
+}
+
+// 添加抵用券
+export async function addCoupon(params) {
+  return request(`${APIROOT}/add_coupon`, {
+    method: 'POST',
+    body: {
+      ...params,
+    },
+  });
+}
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');

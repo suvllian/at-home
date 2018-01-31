@@ -9,9 +9,17 @@ import styles from './TableList.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;
+const formatTime = val => !!val ? moment(parseInt(val)).format('YYYY-MM-DD HH:mm:ss') : ' -- '
 const getValue = obj => Object.keys(obj).map(key => obj[key]).join(',');
-const statusMap = ['default', 'processing', 'success', 'error'];
-const status = ['关闭', '运行中', '已上线', '异常'];
+const couponsTypeObject = {
+  all: '全部类型有效',
+  1: '全屋清洁免单',
+  2: '钟点保洁免单',
+  3: '擦玻璃免单',
+  4: '厨卫清洁免单',
+  5: '家电清洗免单',
+  6: '家居养护免单'
+}
 const columns = [
   {
     title: '卡券凭证码',
@@ -22,24 +30,29 @@ const columns = [
     dataIndex: 'money_number',
   },
   {
+    title: '卡券类型',
+    dataIndex: 'coupon_type',
+    render: val => couponsTypeObject[val]
+  },
+  {
     title: '创建时间',
     dataIndex: 'gmt_create',
-    render: val => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>),
+    render: val => formatTime(val),
   },
   {
     title: '失效时间',
     dataIndex: 'invalid_time',
-    render: val => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>),
+    render: val => formatTime(val),
   },
   {
     title: '兑换时间',
     dataIndex: 'gmt_exchange',
-    render: val => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>),
+    render: val => formatTime(val),
   },
   {
     title: '领用人',
-    dataIndex: 'customer_id',
-    render: val => (<span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>),
+    dataIndex: 'nick_name',
+    render: val => !!val ? val : ' -- ',
   },
   {
     title: '已兑换',
@@ -47,18 +60,15 @@ const columns = [
     render: val => (<span>{val ? '是' : '否'}</span>),
   },
   {
+    title: '使用时间',
+    dataIndex: 'gmt_used',
+    render: val => formatTime(val),
+  },
+  {
     title: '已使用',
     dataIndex: 'has_used',
     render: val => (<span>{val ? '是' : '否'}</span>),
-  },
-  {
-    title: '操作',
-    render: () => (
-      <Fragment>
-        <a href="#">操作</a>
-      </Fragment>
-    ),
-  },
+  }
 ];
 
 const CreateForm = Form.create()((props) => {
@@ -66,34 +76,73 @@ const CreateForm = Form.create()((props) => {
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
+      fieldsValue.couponInvalidTime = fieldsValue.couponInvalidTime.valueOf()
+      console.log(fieldsValue)
       handleAdd(fieldsValue);
     });
   };
   return (
     <Modal
-      title="新建规则"
+      title="添加抵用券"
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
       <FormItem
-        labelCol={{ span: 5 }}
+        labelCol={{ span: 7 }}
         wrapperCol={{ span: 15 }}
-        label="描述"
+        label="抵用券码"
       >
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: 'Please input some description...' }],
+        {form.getFieldDecorator('couponCode', {
+          rules: [{ required: true, message: '请输入抵用券码' }],
         })(
           <Input placeholder="请输入" />
+        )}
+      </FormItem>
+      <FormItem
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 15 }}
+        label="抵用券金额"
+      >
+        {form.getFieldDecorator('couponMoney', {
+          rules: [{ required: true, message: '请输入抵用券金额' }],
+        })(
+          <Input placeholder="请输入" />
+        )}
+      </FormItem>
+      <FormItem
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 15 }}
+        label="抵用券失效时间"
+      >
+        {form.getFieldDecorator('couponInvalidTime', {
+          rules: [{ required: true, message: '请选择抵用券失效时间' }],
+        })(
+          <DatePicker />
+        )}
+      </FormItem>
+      <FormItem
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 15 }}
+        label="抵用券类型"
+      >
+        {form.getFieldDecorator('couponType', {
+          initialValue: 'all',
+          rules: [{ required: true, message: '请选择抵用券类型' }],
+        })(
+          <Select>
+            <Option value="all">全部类型有效</Option>
+            <Option value="3">擦玻璃免单</Option>
+          </Select>
         )}
       </FormItem>
     </Modal>
   );
 });
 
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ coupons, loading }) => ({
+  coupons,
+  loading: loading.models.coupons,
 }))
 @Form.create()
 export default class TableList extends PureComponent {
@@ -107,7 +156,7 @@ export default class TableList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'coupons/fetch',
     });
   }
 
@@ -132,7 +181,7 @@ export default class TableList extends PureComponent {
     }
 
     dispatch({
-      type: 'rule/fetch',
+      type: 'coupons/fetch',
       payload: params,
     });
   }
@@ -144,7 +193,7 @@ export default class TableList extends PureComponent {
       formValues: {},
     });
     dispatch({
-      type: 'rule/fetch',
+      type: 'coupons/fetch',
       payload: {},
     });
   }
@@ -153,31 +202,6 @@ export default class TableList extends PureComponent {
     this.setState({
       expandForm: !this.state.expandForm,
     });
-  }
-
-  handleMenuClick = (e) => {
-    const { dispatch } = this.props;
-    const { selectedRows } = this.state;
-
-    if (!selectedRows) return;
-
-    switch (e.key) {
-      case 'remove':
-        dispatch({
-          type: 'rule/remove',
-          payload: {
-            no: selectedRows.map(row => row.no).join(','),
-          },
-          callback: () => {
-            this.setState({
-              selectedRows: [],
-            });
-          },
-        });
-        break;
-      default:
-        break;
-    }
   }
 
   handleSelectRows = (rows) => {
@@ -204,7 +228,7 @@ export default class TableList extends PureComponent {
       });
 
       dispatch({
-        type: 'rule/fetch',
+        type: 'coupons/fetch',
         payload: values,
       });
     });
@@ -217,16 +241,22 @@ export default class TableList extends PureComponent {
   }
 
   handleAdd = (fields) => {
-    this.props.dispatch({
-      type: 'rule/add',
+    const { dispatch } = this.props
+    dispatch({
+      type: 'coupons/add',
       payload: {
-        description: fields.desc,
-      },
+        ...fields
+      }
     });
 
     message.success('添加成功');
+    setTimeout(() => {
+      dispatch({
+        type: 'coupons/fetch'
+      });
+    }, 1000);
     this.setState({
-      modalVisible: false,
+      modalVisible: false
     });
   }
 
@@ -234,7 +264,7 @@ export default class TableList extends PureComponent {
     const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+        {/* <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="规则编号">
               {getFieldDecorator('no')(
@@ -257,21 +287,14 @@ export default class TableList extends PureComponent {
               <Button type="primary" htmlType="submit">查询</Button>
             </span>
           </Col>
-        </Row>
+        </Row> */}
       </Form>
     );
   }
 
   render() {
-    const { rule: { data }, loading } = this.props;
+    const { coupons: { data }, loading } = this.props;
     const { selectedRows, modalVisible } = this.state;
-
-    const menu = (
-      <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
-      </Menu>
-    );
 
     const parentMethods = {
       handleAdd: this.handleAdd,
@@ -289,18 +312,6 @@ export default class TableList extends PureComponent {
               <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
                 新建
               </Button>
-              {
-                selectedRows.length > 0 && (
-                  <span>
-                    <Button>批量操作</Button>
-                    <Dropdown overlay={menu}>
-                      <Button>
-                        更多操作 <Icon type="down" />
-                      </Button>
-                    </Dropdown>
-                  </span>
-                )
-              }
             </div>
             <StandardTable
               selectedRows={selectedRows}

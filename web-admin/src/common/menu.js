@@ -20,7 +20,7 @@ const menuData = [{
   icon: 'pay-circle',
   path: 'list/order-list',
 }, {
-  name: '优惠券列表',
+  name: '抵用券列表',
   icon: 'table',
   path: 'list/coupon-list',
 }, {
