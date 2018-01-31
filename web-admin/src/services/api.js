@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 import request from '../utils/request';
-// const APIROOT = 'https://zaihu.zhangguanzhang.com/zaihu'
-const APIROOT = 'http://localhost:8080/zaihu';
+const APIROOT = 'https://zaihu.zhangguanzhang.com/zaihu'
+// const APIROOT = 'http://localhost:8080/zaihu';
 
 // 获取订单信息
 export async function queryOrderTypeInfor(params) {
@@ -27,6 +27,12 @@ export async function getUserList() {
 export async function getUserInfo(params) {
   return request(`${APIROOT}/get_user_infor?${stringify(params)}`);
 }
+
+// 获取订单列表
+export async function getAllOrderList() {
+  return request(`${APIROOT}/get_all_order_list`);
+}
+
 
 
 export async function queryProjectNotice() {
