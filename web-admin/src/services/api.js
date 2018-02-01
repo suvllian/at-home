@@ -28,6 +28,11 @@ export async function getUserInfo(params) {
   return request(`${APIROOT}/get_user_infor?${stringify(params)}`);
 }
 
+// 获取订单列表
+export async function getAllOrderList() {
+  return request(`${APIROOT}/get_all_order_list`);
+}
+
 // 获取抵用券列表
 export async function getSendCouponsList(params) {
   return request(`${APIROOT}/get_all_coupons_list?${stringify(params)}`);
