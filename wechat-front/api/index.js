@@ -54,7 +54,7 @@ export const getEffectiveCoupons = params => wxRequest(params, `${APIROOT}/coupo
 export const getOrderTypeInfo = params => wxRequest(params, `${APIROOT}/get_order_tpye_info/${params.query.orderType}`)
 // 获取所有卡券
 export const getCardsList = params => wxRequest(params, `${APIROOT}/get_card_list`)
-// 获取家政服务和企业清洁
+// 获取家政服务和企业清洁页面图片
 export const getPageInfor = params => wxRequest(params, `${APIROOT}/get_page_information`)
 
 

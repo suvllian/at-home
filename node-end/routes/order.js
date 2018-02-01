@@ -15,7 +15,7 @@ router.post('/pay_order', function(req, res, next) {
   var { orderId, loginCode, totalFee, orderTime, createTime, addressId, orderParentType, orderTypeId, specificCount, phone, couponId } = req.body
   couponId = couponId ? couponId : 0
 
-  if (!orderId || !totalFee || !orderTime || !createTime || !addressId || !orderParentType || !orderTypeId || !phone) {
+  if (!orderId || totalFee < 0 || !orderTime || !createTime || !addressId || !orderParentType || !orderTypeId || !phone) {
     return utils.failRes(res, {
       msg: '支付请求参数有误'
     })

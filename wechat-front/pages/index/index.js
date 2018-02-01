@@ -1,11 +1,13 @@
-import { login, getCardsList, getEffectiveCoupons } from '../../api/index.js'
+import { login, getCardsList, getPageInfor } from '../../api/index.js'
 import { getCurrentDate } from '../../utils/util.js'
 import { wxPay } from '../../utils/pay.js'
-import { STORAGEKEY, COUPONSTORAGEKEY } from '../../config.js'
+import { getEffectiveCouponsInfor } from '../../utils/coupon.js'
+import { STORAGEKEY } from '../../config.js'
 const app = getApp()
 
 Page({
   data: {
+    bannerList: [],
     navList: [
       [
         { title: '全屋保洁', src: '../../assets/images/whole_home.png', url: '/pages/whole-house/index' },
@@ -31,7 +33,8 @@ Page({
   onLoad() {
     // 获取卡券列表
     this.getCards()
-    this.getEffectiveCoupons()
+    this.getBannerList()
+    getEffectiveCouponsInfor()
 
     // 将用户基本信息存储到缓存中
     wx.getStorage({
@@ -94,48 +97,22 @@ Page({
     })
   },
   /**
-   * 获取有效的券
+   * 获取bannerlist
    */
-  getEffectiveCoupons() {
-    const userInfo = wx.getStorageSync(STORAGEKEY) || {}
-    const { phone } = userInfo
+  getBannerList() {
+    const $that = this
 
-    if (!phone) {
-      return
-    }
-
-    wx.login({
+    getPageInfor({
+      method: 'GET',
+      data: {
+        pageType: 0
+      },
       success: res => {
-        const { code } = res
+        const { data } = res
+        const { data: bannerList = [] } = data
 
-        if (!code) {
-          return 
-        }
-
-        getEffectiveCoupons({
-          method: 'GET',
-          data: {
-            code, phone
-          },
-          success: res => {
-            const { data = {} } = res
-            const { data: effictiveCouponList = [], success = false } = data
-
-            if (!success) {
-              return 
-            }
-
-            if (effictiveCouponList.length > 1) {
-              effictiveCouponList.sort((a, b) => {
-                return b.coupons_money - a.coupons_money
-              })
-            }
-
-            wx.setStorageSync(COUPONSTORAGEKEY, effictiveCouponList)
-          },
-          fail: err => {
-            console.log(err)
-          }
+        $that.setData({
+          bannerList
         })
       }
     })

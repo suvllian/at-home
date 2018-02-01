@@ -26,6 +26,7 @@ const priceObject = {
   '双开门冰箱': 'complexRefrigeratorPrice'
 }
 const app = getApp()
+const orderTypeParentId = 5
 
 Page({
   data: {
@@ -92,7 +93,7 @@ Page({
 
     getOrderTypeInfo({
       query: {
-        orderType: 5
+        orderType: orderTypeParentId
       },
       success: res => {
         const { data } = res
@@ -107,7 +108,6 @@ Page({
         const totalFee = hangAirConditionCount * newPriceObject['hangAirConditionPrice']
         const coupons = getEligibleCoupon(totalFee)
         const discountMoney = (totalFee * memberScale + coupons).toFixed(2)
-        // 关闭loading
         wx.hideLoading()
 
         $that.setData({
@@ -253,21 +253,18 @@ Page({
     const orderTime = `${date} ${multiArray[0][multiIndex[0]]}${multiArray[1][multiIndex[1]]}-${multiArray[2][multiIndex[2]]}点`
 
     // 预约时间校验
-    const formatTime = `${date} ${multiArray[1][multiIndex[1]]}:00:00`
-    if (new Date(formatTime).getTime() < createTime) {
-      console.log('选择正确的时间')
-    }
+    const formatOrderTime = `${date} ${multiArray[1][multiIndex[1]]}:00:00`
 
     // 订单号
     const orderId = `1${orderParentType}${orderTypeId}${getCurrentDate().join('')}${createTime}`
 
-    wxPay(orderId, totalFee, '/pages/index/index', {
+    wxPay(orderId, totalFee, '/pages/history/index', {
       orderTypeId,
       orderParentType,
       orderTime,
       createTime,
       specificCount: [hangAirConditionCount, packageAirConditionCount, kitchenVentilatorCount, washerCount,
         computerCount, microwaveCount, singleRefrigeratorCount, complexRefrigeratorCount]
-    })
+    }, formatOrderTime)
   }
  })

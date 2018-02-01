@@ -1,7 +1,17 @@
 import { exchangeCoupon, getCouponsList } from '../../api/index.js'
 import { showToast, formatTime } from '../../utils/util.js'
+import { getEffectiveCouponsInfor } from '../../utils/coupon.js'
 import { SERVICENUMBER, STORAGEKEY } from '../../config.js'
 const app = getApp()
+const couponsTypeObject = {
+  all: '兑换抵用券',
+  1: '全屋清洁抵用券',
+  2: '钟点保洁抵用券',
+  3: '擦玻璃抵用券',
+  4: '厨卫清洁抵用券',
+  5: '家电清洗抵用券',
+  6: '家居养护抵用券'
+}
 
 Page({
   data: {
@@ -60,6 +70,8 @@ Page({
             $that.setData({
               couponsList: couponsList.map(coupon => {
                 coupon.used_time = formatTime(coupon.gmt_exchange, '-')
+                coupon.coupon_type_name = couponsTypeObject[coupon.coupon_type]
+                coupon.coupon_type_all = coupon.coupon_type === 'all' ? true : false
                 return coupon
               })
             })
@@ -110,7 +122,7 @@ Page({
    */
   codeInput: function(e) {
     this.setData({
-      couponCode: e.detail.value
+      couponCode: e.detail.value.trim()
     })
   },
   /*
@@ -155,6 +167,7 @@ Page({
 
               if (success) {
                 showToast('领用成功')
+                getEffectiveCouponsInfor()
                 wx.redirectTo({
                   url: '/pages/coupons/index',
                 })

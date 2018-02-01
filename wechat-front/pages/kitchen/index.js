@@ -5,6 +5,7 @@ import { getEligibleCoupon, getMemberScale, clearCouponInfo } from '../../utils/
 import { wxPay } from '../../utils/pay.js'
 
 const app = getApp()
+const orderTypeParentId = 4
 const pickArray = ['一', '两', '三', '四', '五', '六', '七', '八', '九', '十']
 const typeObject = {
   '1': 'kitchenCount',
@@ -68,7 +69,7 @@ Page({
 
     getOrderTypeInfo({
       query: {
-        orderType: 4
+        orderType: orderTypeParentId
       },
       success: res => {
         const { data } = res
@@ -192,20 +193,17 @@ Page({
     const orderTime = `${date} ${multiArray[0][multiIndex[0]]}${multiArray[1][multiIndex[1]]}-${multiArray[2][multiIndex[2]]}点`
 
     // 预约时间校验
-    const formatTime = `${date} ${multiArray[1][multiIndex[1]]}:00:00`
-    if (new Date(formatTime).getTime() < createTime) {
-      console.log('选择正确的时间')
-    }
+    const formatOrderTime = `${date} ${multiArray[1][multiIndex[1]]}:00:00`
 
     // 订单号
     const orderId = `1${orderParentType}${orderTypeId}${getCurrentDate().join('')}${createTime}`
 
-    wxPay(orderId, totalFee, '/pages/index/index', {
+    wxPay(orderId, totalFee, '/pages/history/index', {
       orderTypeId,
       orderParentType,
       orderTime,
       createTime,
       specificCount: [kitchenCount, bathroomCount]
-    })
+    }, formatOrderTime)
   }
  })

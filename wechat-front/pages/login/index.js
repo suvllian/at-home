@@ -62,7 +62,6 @@ Page({
               },
               fail: err => {
                 showToast('获取验证码失败')
-                console.log('获取验证码失败')
               }
             })
           }
@@ -84,49 +83,57 @@ Page({
   register: function() {
     const { phoneNumber, verifyCode } = this.data
 
+    if (!phoneNumber || !verifyCode) {
+      showToast('请输入正确的手机号和验证码')
+      return
+    }
+
     wx.getStorage({
       key: STORAGEKEY,
       success: res => {
         const { data: userInfo } = res || {}
 
-        if (phoneNumber && verifyCode) {
-          wx.login({
-            success: function (res) {
-              const { code } = res
+        wx.login({
+          success: function (res) {
+            const { code } = res
 
-              if (code) {
-                register({
-                  method: 'POST',
-                  data: {
-                    phoneNumber,
-                    verifyCode,
-                    nickName: userInfo.nickName,
-                    loginCode: code
-                  },
-                  success: res => {
-                    const { success = false, msg = '', data } = res.data
-
-                    if (!success) {
-                      showToast(msg)
-                      return 
-                    }
-
-                    wx.setStorage({
-                      key: STORAGEKEY,
-                      data: {
-                        ...userInfo,
-                        ...data
-                      }
-                    })
-                    wx.navigateBack({
-                      delta: 1
-                    })
+            if (code) {
+              wx.showLoading()
+              register({
+                method: 'POST',
+                data: {
+                  phoneNumber,
+                  verifyCode,
+                  nickName: userInfo.nickName,
+                  loginCode: code
+                },
+                success: res => {
+                  const { success = false, msg = '', data } = res.data
+                  wx.hideLoading()
+                  if (!success) {
+                    showToast(msg)
+                    return
                   }
-                })
-              }
+
+                  wx.setStorage({
+                    key: STORAGEKEY,
+                    data: {
+                      ...userInfo,
+                      ...data
+                    }
+                  })
+                  wx.navigateBack({
+                    delta: 1
+                  })
+                },
+                fail: err => {
+                  wx.hideLoading()
+                  showToast('登录失败，请重试')
+                }
+              })
             }
-          })
-        }
+          }
+        })
       }
     })
   }

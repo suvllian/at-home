@@ -25,7 +25,7 @@ export const getCurrentDate = (time) => {
   const dateObject = new Date()
   const year = dateObject.getFullYear()
   const month = String(dateObject.getMonth() + 1).padStart(2, '0')
-  const day = dateObject.getDate()
+  const day = String(dateObject.getDate()).padStart(2, '0')
 
   return [year, month, day]
 }

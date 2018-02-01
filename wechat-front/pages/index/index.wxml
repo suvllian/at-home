@@ -1,7 +1,12 @@
 <view class="container">
-  <view class="flex-container">
-    <image src="../../assets/images/index_banner.jpg" mode="widthFix" class="banner-img"></image>
-  </view>
+  <swiper indicator-dots="true"
+  autoplay="true" interval="4000" duration="700" class="flex-container slider-container">
+    <block wx:for="{{bannerList}}" wx:key="bannerListIdx" wx:for-item="banner">
+      <swiper-item class="slider-item">
+        <image src="{{banner.image_url}}" class="slide-image"/>
+      </swiper-item>
+    </block>
+  </swiper>
   <view class="section nav-container">
     <view class="flex-container" wx:for="{{navList}}" wx:key="navListIdx" wx:for-item="navs">
       <view class="nav-row" wx:for="{{navs}}" wx:key="navsIdx" wx:for-item="nav">

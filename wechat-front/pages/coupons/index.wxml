@@ -12,14 +12,14 @@
     <view wx:for="{{couponsList}}" wx:key="couponsIdx" wx:for-item="coupon" class="section" data-select-coupon='{{coupon}}' bindtap='selectCoupon'>
       <view class="order-row">
         <view class="order-row-inner">
-          <view class="row-inner font-weight-600">兑用抵换券{{coupon.has_used ? '（已使用）' : ''}}</view>
+          <view class="row-inner font-weight-600">{{coupon.coupon_type_name}}{{coupon.has_used ? '（已使用）' : ''}}</view>
         </view>
       </view>
       <view class="order-row">
         <view class="order-row-inner">
           <view class="font-30 order-text gray-word">兑换时间：{{coupon.used_time}}</view>
-          <view class="font-30 order-text gray-word font-weight-600">￥{{coupon.coupons_money}}</view>
-          <view class="font-22 order-text gray-word">消费时当消费金额大于抵用券面额即可抵用相应金额。</view>
+          <view class="font-30 order-text gray-word font-weight-600" wx:if="{{coupon.coupon_type_all}}">￥{{coupon.coupons_money}}</view>
+          <view class="font-22 order-text gray-word coupon-intro">{{ coupon.coupon_type_all ? '消费时当消费金额大于抵用券面额即可抵用相应金额。' : '本抵用券仅用于擦玻璃项目，需提前两天预约。凡180平方米以内加1元即可兑换全屋擦玻璃一次。如有疑问，请联系客服。' }}</view>
         </view>
         <template is="bottom" />
       </view>

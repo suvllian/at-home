@@ -4,11 +4,12 @@ import { parseObjectParams, getRandomString, showToast } from './util.js'
 import md5 from './md5.js'
 const app = getApp()
 
-export const wxPay = (orderId, totalFee, redirectUrl, params) => {
+export const wxPay = (orderId, totalFee, redirectUrl, params, formatOrderTime) => {
   const userInfo = wx.getStorageSync(STORAGEKEY) || {}
   const { phone } = userInfo || {}
   // 地址信息
   const { choosedAddress, couponInfo } = app.globalData
+  const { createTime } = params
 
   if (!phone) {
     // 未注册
@@ -18,11 +19,16 @@ export const wxPay = (orderId, totalFee, redirectUrl, params) => {
     return 
   }
   // 未选择服务地址
-  if (!choosedAddress) {
+  if (!choosedAddress.addressId) {
     wx.navigateTo({
       url: '/pages/address-list/index?type=choose'
     })
     return
+  }
+
+  if (new Date(formatOrderTime).getTime() < createTime) {
+    showToast('请选择正确的时间')
+    return 
   }
   // 地址ID
   const { addressId } = choosedAddress

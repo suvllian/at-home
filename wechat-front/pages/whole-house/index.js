@@ -3,7 +3,8 @@ import { SERVICENUMBER, TIMEPICKERVALUE } from '../../config.js'
 import { getCurrentDate, showToast } from '../../utils/util.js'
 import { wxPay } from '../../utils/pay.js'
 import { getEligibleCoupon, getMemberScale, clearCouponInfo } from '../../utils/storage.js'
-var app = getApp()
+const app = getApp()
+const orderTypeParentId = 1
 
 Page({
   data: {
@@ -47,7 +48,7 @@ Page({
     getOrderTypeInfo({
       method: 'GET',
       query: {
-        orderType: 1
+        orderType: orderTypeParentId
       },
       success: res => {
         const { data } = res
@@ -91,9 +92,14 @@ Page({
     const selectedIndex = e.detail.value
     const { priceList } = this.data
     const memberScale = getMemberScale()
-    const totalFee = priceList[selectedIndex] * (1 - memberScale)
+    const totalFee =  priceList[selectedIndex] * (1 - memberScale)
     const coupons = getEligibleCoupon(totalFee)
     const discountMoney = (priceList[selectedIndex] * memberScale + coupons).toFixed(2)
+
+    if (selectedIndex == 3) {
+      showToast('180㎡以上订单请联系客服预定')
+      this.callService()
+    }
 
     this.setData({
       coupons, totalFee,
@@ -117,6 +123,11 @@ Page({
   payMoney: function () {
     // 获取订单信息
     const { priceList, selectedIndex, typeInformation, date, multiArray, multiIndex, discountMoney } = this.data
+    if (selectedIndex == 3) {
+      showToast('180㎡以上订单请联系客服预定')
+      this.callService()
+      return
+    }
     // 总价
     const totalFee = priceList[selectedIndex] - discountMoney 
     // 订单类型信息id
@@ -127,20 +138,17 @@ Page({
     const orderTime = `${date} ${multiArray[0][multiIndex[0]]}${multiArray[1][multiIndex[1]]}-${multiArray[2][multiIndex[2]]}点`
 
     // 预约时间校验
-    const formatTime = `${date} ${multiArray[1][multiIndex[1]]}:00:00`
-    if (new Date(formatTime).getTime() < createTime) {
-      console.log('选择正确的时间')
-    }
+    const formatOrderTime = `${date} ${multiArray[1][multiIndex[1]]}:00:00`
 
     // 订单号
     const orderId = `1${orderParentType}${orderTypeId}${getCurrentDate().join('')}${createTime}`
 
-    wxPay(orderId, totalFee, '/pages/index/index', {
+    wxPay(orderId, totalFee, '/pages/history/index', {
       orderTypeId,
       orderParentType,
       orderTime,
       createTime
-    })
+    }, formatOrderTime)
   },
   callService: function () {
     wx.makePhoneCall({
