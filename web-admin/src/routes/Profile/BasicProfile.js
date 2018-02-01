@@ -183,10 +183,10 @@ export default class BasicProfile extends Component {
         dataIndex: 'gmt_used',
         key: 'gmt_used',
         render: (value) => {
-          return this.timeFormater(value);
+          return !!value ? this.timeFormater(value) : '--';
         },
       }, {
-        title: '已使用',
+        title: '是否使用',
         dataIndex: 'has_used',
         key: 'has_used',
         render: (value) => {

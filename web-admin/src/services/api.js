@@ -33,7 +33,20 @@ export async function getAllOrderList() {
   return request(`${APIROOT}/get_all_order_list`);
 }
 
+// 获取抵用券列表
+export async function getSendCouponsList(params) {
+  return request(`${APIROOT}/get_all_coupons_list?${stringify(params)}`);
+}
 
+// 添加抵用券
+export async function addCoupon(params) {
+  return request(`${APIROOT}/add_coupon`, {
+    method: 'POST',
+    body: {
+      ...params,
+    },
+  });
+}
 
 export async function queryProjectNotice() {
   return request('/api/project/notice');
